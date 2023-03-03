@@ -6,16 +6,17 @@ using namespace std;
 class User{
 	string name;
 	string password;
-public:
+protected:
 	User();
 	User(string name, string pass);
 	virtual ~User();
-	virtual void menu() const = 0;
-protected:
+	
 	void setName();
 	void setPassword();
 	void getName() const;
 	void getPassword() const;
+public:
+	virtual void menu() = 0;
 };
 
 User::User() : name("no name"), password("no pass") {};
@@ -29,11 +30,11 @@ class Student : public User
 	string number;
 	string address;
 	string FIO;
-protected:
+public:
 	Student();
 	Student(string name, string pass, string number, string address, string FIO);
 	virtual ~Student();
-	virtual void menu() const override;
+	virtual void menu()override;
 
 	void setNumber();
 	void setAddress();
@@ -54,7 +55,7 @@ Student::Student(string name, string pass, string number, string address, string
 
 Student::~Student() {}
 
-void Student::menu() const
+void Student::menu()
 {
 	do {
 		system("cls");
@@ -76,10 +77,10 @@ void Student::menu() const
 
 class Admin : public User
 {
-protected:
+public:
 	Admin();
 	Admin(string name, string pass);
-	virtual void menu() const override;
+	virtual void menu() override;
 
 	void menegment_user();// управління користувачами
 	void add_user();//додати користувача
@@ -104,7 +105,7 @@ Admin::Admin() :User() {};
 
 Admin::Admin(string name, string pass) : User(name, pass) {};
 
-void Admin::menu() const
+void Admin::menu()
 {
 	do {
 		system("cls");
@@ -126,19 +127,19 @@ void Admin::menu() const
 
 class Testing_system
 {
-	User* users;
+	User* user;
 	void login();
 	void Registration();
 public:
 	Testing_system();
 	~Testing_system();
-	virtual void menu() const ;
+	virtual void menu();
 };
 
-Testing_system::Testing_system() : users(nullptr) {}
+Testing_system::Testing_system() : user(nullptr) {}
 Testing_system::~Testing_system() { /*delete[] users;*/ }
 
-void Testing_system::menu() const
+void Testing_system::menu()
 {
 	do {
 		system("cls");
@@ -150,8 +151,25 @@ void Testing_system::menu() const
 		switch (choice)
 		{
 		case 0: /*login();*/		break;
-		case 1: /*Registration();*/ break;
+		case 1: Registration(); break;
 		case 2: return;
 		}
 	} while (true);
+}
+
+void Testing_system::Registration()
+{
+	string new_name, new_pass;
+	cout << "Name :"; cin >> new_name;
+	cout << "Password :"; cin >> new_pass;
+	if (user == 0)
+		user = new Admin(new_name, new_pass);
+	else {
+		string new_FIO, new_number, new_address;
+		cout << "FIO :"; cin >> new_FIO;
+		cout << "Mobile number :"; cin >> new_number;
+		cout << "Home address :"; cin >> new_address;
+		user = new Student(new_name, new_pass, new_FIO, new_number, new_address);
+	}
+	user->menu();
 }
