@@ -209,8 +209,15 @@ void Testing_system::login()
 {
 	string new_name, new_pass;
 	cout << "Name :"; cin >> new_name;
-	for (size_t i = 0; i < user.size(); i++)
+	for(User* u : user)
 	{
-		if(new_name == user->getName()[i])
+		if (user == new_name)
+		{
+
+		}
 	}
+	/*for (size_t i = 0; i < user.size(); i++)
+	{
+		if (new_name == user.rend()) {}
+	}*/
 }
