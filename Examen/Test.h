@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream> 
 #include"Menu.h"
+#include<list>
 using namespace std;
 
 class User{
@@ -9,14 +10,15 @@ class User{
 protected:
 	User();
 	User(string name, string pass);
-	virtual ~User();
 	
 	void setName();
 	void setPassword();
-	void getName() const;
-	void getPassword() const;
+	
 public:
 	virtual void menu() = 0;
+	virtual ~User();
+	string getName() const;
+	string getPassword() const;
 };
 
 User::User() : name("no name"), password("no pass") {};
@@ -24,6 +26,8 @@ User::User() : name("no name"), password("no pass") {};
 User::User(string name, string pass) : name(name), password(pass) {};
 
 User::~User(){}
+
+string User::getName() const{	return name;	}
 
 class Student : public User
 {
@@ -39,9 +43,9 @@ public:
 	void setNumber();
 	void setAddress();
 	void setFIO();
-	void getNumber() const;
-	void getAddress() const;
-	void get_FIO() const;
+	string getNumber() const;
+	string getAddress() const;
+	string get_FIO() const;
 
 	void viewing_previons_tests();//посмотреть предыдущие тесты и их результаты
 	void take_a_test();//пройти тест
@@ -67,7 +71,7 @@ void Student::menu()
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: /*viewing_previons_tests();;*/		break;
+		case 0: /*viewing_previons_tests();*/		break;
 		case 1: /*take_a_test();*/					break;
 		case 2: /*contine_test();*/					break;
 		case 3: return;
@@ -127,7 +131,8 @@ void Admin::menu()
 
 class Testing_system
 {
-	User* user;
+	list<User*> user;
+	size_t size;
 	void login();
 	void Registration();
 public:
@@ -136,8 +141,8 @@ public:
 	virtual void menu();
 };
 
-Testing_system::Testing_system() : user(nullptr) {}
-Testing_system::~Testing_system() { /*delete[] users;*/ }
+Testing_system::Testing_system() {}
+Testing_system::~Testing_system() { user.clear(); }
 
 void Testing_system::menu()
 {
@@ -150,7 +155,7 @@ void Testing_system::menu()
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: /*login();*/		break;
+		case 0: login();		break;
 		case 1: Registration(); break;
 		case 2: return;
 		}
@@ -162,14 +167,28 @@ void Testing_system::Registration()
 	string new_name, new_pass;
 	cout << "Name :"; cin >> new_name;
 	cout << "Password :"; cin >> new_pass;
-	if (user == 0)
-		user = new Admin(new_name, new_pass);
+	if (user.empty() == 1) {
+		User* admin = new Admin(new_name, new_pass);
+		user.push_back(admin);
+		admin->menu();
+	}
 	else {
 		string new_FIO, new_number, new_address;
 		cout << "FIO :"; cin >> new_FIO;
 		cout << "Mobile number :"; cin >> new_number;
 		cout << "Home address :"; cin >> new_address;
-		user = new Student(new_name, new_pass, new_FIO, new_number, new_address);
+		User* student = new Student(new_name, new_pass, new_FIO, new_number, new_address);
+		user.push_back(student);
+		student->menu();
 	}
-	user->menu();
+}
+
+void Testing_system::login()
+{
+	string new_name, new_pass;
+	cout << "Name :"; cin >> new_name;
+	for (size_t i = 0; i < user.size(); i++)
+	{
+		if(new_name == user->getName()[i])
+	}
 }
