@@ -185,10 +185,4 @@ void Testing_system::Registration()
 
 void Testing_system::login()
 {
-	string new_name, new_pass;
-	cout << "Name :"; cin >> new_name;
-	for (size_t i = 0; i < user.size(); i++)
-	{
-		if(new_name == user->getName()[i])
-	}
 }
