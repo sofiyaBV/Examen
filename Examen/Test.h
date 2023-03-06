@@ -38,14 +38,14 @@ public:
 	Student();
 	Student(string name, string pass, string number, string address, string FIO);
 	virtual ~Student();
-	virtual void menu()override;
+	virtual void menu() override;
 
-	void setNumber();
-	void setAddress();
-	void setFIO();
-	string getNumber() const;
-	string getAddress() const;
-	string get_FIO() const;
+	void setNumber(string number) { this->number = number; }
+	void setAddress(string address) { this->address = address; }
+	void setFIO(string fio) { FIO = fio; }
+	string getNumber() const { return number; }
+	string getAddress()  const { return address; }
+	string get_FIO() const { return FIO; }
 
 	void viewing_previons_tests();//посмотреть предыдущие тесты и их результаты
 	void take_a_test();//пройти тест
@@ -77,6 +77,21 @@ void Student::menu()
 		case 3: return;
 		}
 	} while (true);
+}
+
+void Student::viewing_previons_tests()
+{
+
+}
+
+void Student::take_a_test()
+{
+
+}
+
+void Student::contine_test()
+{
+
 }
 
 class Admin : public User
@@ -129,6 +144,11 @@ void Admin::menu()
 	} while (true);
 }
 
+void statistic() {
+	cout << "Statistic" << endl;
+	
+}
+
 class Testing_system
 {
 	list<User*> user;
@@ -143,6 +163,8 @@ public:
 
 Testing_system::Testing_system() {}
 Testing_system::~Testing_system() { user.clear(); }
+
+
 
 void Testing_system::menu()
 {
@@ -185,4 +207,17 @@ void Testing_system::Registration()
 
 void Testing_system::login()
 {
+	string new_name, new_pass;
+	cout << "Name :"; cin >> new_name;
+	for(User* u : user)
+	{
+		if (user == new_name)
+		{
+
+		}
+	}
+	/*for (size_t i = 0; i < user.size(); i++)
+	{
+		if (new_name == user.rend()) {}
+	}*/
 }
