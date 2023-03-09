@@ -314,7 +314,7 @@ void Testing_system::menu()
 		case 0: login();		break;
 		case 1: Registration(); break;
 		case 2: settingConsole(); break;
-		case 3: return;
+		case 3: exit(0);
 		}
 	} while (true);
 }
