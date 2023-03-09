@@ -306,13 +306,15 @@ void Testing_system::menu()
 		int choice = Menu::select_vertical(
 			{ "Увiйти",
 			"Зареєструватися",
+			"Налаштування",
 			"Вийти" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
 		case 0: login();		break;
 		case 1: Registration(); break;
-		case 2: return;
+		case 2: settingConsole(); break;
+		case 3: return;
 		}
 	} while (true);
 }
