@@ -1,45 +1,98 @@
 #pragma once
-#include <iostream> 
+#include <iostream>В 
 #include"Menu.h"
 #include<list>
 #include"BTree.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
 class test 
 {
-	string title;
-	size_t size;
-	list<string> question;
-protected:
-	test() : title("no name"), size(0) {}
-	test(string title, size_t size) : title(title), size(size = 1) {}
-	void print();
-	void setTitle(string name);
-	void setQuestion();
-	string getTitle();
-	size_t getSize();
-	string getQuestion();
 public:
-	void go_test();
+	
+	void add(string nameTest, string nameFileAnswer);
+
+	void go_test(string nameTest, string my_answer);
+
+	void result(string answer, string my_answer);
+
+	string get_name_answer(string name_test);
 };
 
-void test::print()
+void test::add(string nameTest, string nameFileAnswer)
 {
-	cout << "Назва : " << this->getTitle();
-	cout << "Кількість запитань : " << this->getSize();
+	string st;
+	ofstream out(nameTest);
+	ofstream out2(nameFileAnswer);
+	do {
+		bool a = true;
+		getline(cin, st);
+		cout << "Г‡Г Г¤Г Г­ГЁГҐ\n"; getline(cin, st); out << st << "\n";
+		cout << "Г‚Г Г°ГЁГ Г­ГІГ» Г®ГІГўГҐГІГ®Гў \n"; getline(cin, st); out << st << "\n";
+		cout << "ГЏГ°Г ГўГЁГ«ГјГ­Г»Г© Г®ГІГўГҐГІ \n"; getline(cin, st); out2 << st << "\n";
+		cout << "Г¤Г ГЎГўГЁГІГј ГҐГ№ГҐ?(0 - Г­ГҐГІ, 1 - Г¤Г )\n"; cin >> a;
+		if (a == false) return;
+		system("cls");
+	} while (true);
+	out.close(); out2.close();
 }
 
-void test::setTitle(string name){	this->title = name;	}
-
-size_t test::getSize() { return size; }
-
-string test::getTitle() { return title; }
-
-void test::go_test()
+void test::go_test(string nameTest, string my_answer)
 {
-	print();
+	ifstream f;
+	ofstream out;
+	string str, otv;
+	int z = 1;
 
+	f.open(nameTest);
+	out.open(my_answer);
+	if (f && out)
+	{
+		while (getline(f, str))
+		{
+			system("cls");
+			cout << "Г’ГҐГ±ГІ\n";
+			cout << "Г‡Г Г¤Г Г­ГЁГҐ Г­Г®Г¬ГҐГ° " << z << "\n";
+			cout << str << "\n";
+			getline(f, str);
+			cout << str << "\n";
+			cout << "ГЋГІГўГҐГІ - "; cin >> otv;
+			z++;
+			out << otv << "\n";
+		}
+		f.close(); out.close();
+	}
+	else cout << "eror file\n"; return;
+}
+
+void test::result(string answer, string my_answer)
+{
+	int p = 0, n = 0;
+	string str, otv;
+	ifstream f1(answer);
+	ifstream f2(my_answer);
+	if (f1.is_open() && f2.is_open())
+	{
+		while (getline(f1, str) && getline(f2, otv))
+		{
+			if (str == otv) { p++; }
+			else { n++; }
+		}
+		f1.close(); f2.close();
+		cout << p << " - ГЇГ°Г ГўГЁГ«ГјГ­Г»Гµ\n";
+		cout << n << " - Г­ГҐГЇГ°Г ГўГЁГ«ГјГ­Г»Гµ\n";
+		system("pause");
+		return;
+	}
+	else { cout << "eror file"; return; }
+}
+
+string test::get_name_answer(string name_test)
+{
+	return name_test + "_answer.txt";
 }
 
 class User
@@ -61,28 +114,23 @@ public:
 	
 };	
 
-User::User() : name("no name"), password("no pass") {};
+User::User(): name("no name"), password("no pass") {};
 
 User::User(string name, string pass) : name(name) { setPassword(pass); };
 
 User::~User(){}
 
-void User::setName(string name){	this->name = name;	}
+void   User::setName(string name)		{	this->name = name;	}
 
-string User::getName() const{	return name;	}
+string User::getName() const			{	return name;		}
 
-void User::setPassword(string pass) {	password = pass;	}
+void   User::setPassword(string pass)	{	password = pass;	}
 
-string User::getPassword() const {	return password; }
-
-//istream& operator>>(istream& in, User* p)
-//{
-//	cout << " Name : "; getline(in, p->name);
-//	return in;
-//}
+string User::getPassword() const		{	return password;	}
 
 class Student : public User
 {
+	test* test = nullptr;
 	string number;
 	string address;
 	string FIO;
@@ -92,16 +140,16 @@ public:
 	virtual ~Student();
 	virtual void menu() override;
 
-	void setNumber(string number) { this->number = number; }
-	void setAddress(string address) { this->address = address; }
-	void setFIO(string fio) { FIO = fio; }
-	string getNumber() const { return number; }
-	string getAddress()  const { return address; }
-	string get_FIO() const { return FIO; }
+	void setNumber(string number)	{ this->number = number;	}
+	void setAddress(string address) { this->address = address;  }
+	void setFIO(string fio)			{ FIO = fio;				}
+	string getNumber() const		{ return number;			}
+	string getAddress()  const		{ return address;			}
+	string get_FIO() const			{ return FIO;				}
 
-	void viewing_previons_tests();//посмотреть предыдущие тесты и их результаты
-	void take_a_test();//пройти тест
-	void contine_test();//продолжить тест
+	void viewing_previons_tests();//ГЇГ®Г±Г¬Г®ГІГ°ГҐГІГј ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГЁГҐ ГІГҐГ±ГІГ» ГЁ ГЁГµ Г°ГҐГ§ГіГ«ГјГІГ ГІГ»
+	void take_a_test();//ГЇГ°Г®Г©ГІГЁ ГІГҐГ±ГІ
+	void contine_test();//ГЇГ°Г®Г¤Г®Г«Г¦ГЁГІГј ГІГҐГ±ГІ
 
 	void profil();
 };
@@ -117,18 +165,18 @@ void Student::menu()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль студента : " << User::getName();
+		cout << "\n\n\n\n\n\n\t\t\t\tГЏГ°Г®ГґiГ«Гј Г±ГІГіГ¤ГҐГ­ГІГ  : " << User::getName();
 		int choice = Menu::select_vertical(
-			{ "Перегляд попереднiх результатiв",
-			"Пройти тест",
-			"Продовжити тест",
-			"Переглянути профіль",
-			"Вийти" },
+			{ "ГЏГҐГ°ГҐГЈГ«ГїГ¤ ГЇГ®ГЇГҐГ°ГҐГ¤Г­iГµ Г°ГҐГ§ГіГ«ГјГІГ ГІiГў",
+			"ГЏГ°Г®Г©ГІГЁ ГІГҐГ±ГІ",
+			"ГЏГ°Г®Г¤Г®ГўГ¦ГЁГІГЁ ГІГҐГ±ГІ",
+			"ГЏГҐГ°ГҐГЈГ«ГїГ­ГіГІГЁ ГЇГ°Г®ГґВіГ«Гј",
+			"Г‚ГЁГ©ГІГЁ" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
 		case 0: /*viewing_previons_tests();*/		break;
-		case 1: /*take_a_test();*/					break;
+		case 1: take_a_test();					    break;
 		case 2: /*contine_test();*/					break;
 		case 3: profil();							break;
 		case 4: return;
@@ -154,7 +202,16 @@ void Student::viewing_previons_tests()
 
 void Student::take_a_test()
 {
-
+	cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ ГІГҐГ±ГІГ \n";
+	string name_test;
+	getline(cin, name_test);
+	name_test += ".txt";
+	cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ ГґГ Г©Г«Г  Гў ГЄГ®ГІГ®Г°Г®Г¬ ГЎГіГ¤ГҐГІ ГµГ°Г Г­ГЁГІГјГ±Гї Г®ГІГўГҐГІ\n";
+	string name_my_answer;
+	getline(cin, name_my_answer);
+	name_my_answer += ".txt";
+	test->go_test(name_test, name_my_answer);
+	test->result("answertest2.txt", name_test);
 }
 
 void Student::contine_test()
@@ -162,34 +219,34 @@ void Student::contine_test()
 
 }
 
-class Admin : public User, public test
+class Admin : public User
 {
-	BTree<string, list<test*>> tests;
+	test* test;
 public:
 	Admin();
 	Admin(string name, string pass);
 	virtual void menu() override;
 
-	void menegment_user();// управління користувачами
-	void add_user();//додати користувача
-	void delete_user();// відалити користувача
-	void user_modification();// изменить параметрі пользователя
+	void menegment_user();// ГіГЇГ°Г ГўГ«ВіГ­Г­Гї ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г Г¬ГЁ
+	void add_user();//Г¤Г®Г¤Г ГІГЁ ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г 
+	void delete_user();// ГўВіГ¤Г Г«ГЁГІГЁ ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г 
+	void user_modification();// ГЁГ§Г¬ГҐГ­ГЁГІГј ГЇГ Г°Г Г¬ГҐГІГ°Ві ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї
 
-	void statistic();//статистика
-	void statistic_categories();//по ктегории
-	void statistic_test();// по тесту
-	void statistic_user();//по пользователю
-	void statistic_output_fille();//загрузить статистику в файл
+	void statistic();//Г±ГІГ ГІГЁГ±ГІГЁГЄГ 
+	void statistic_categories();//ГЇГ® ГЄГІГҐГЈГ®Г°ГЁГЁ
+	void statistic_test();// ГЇГ® ГІГҐГ±ГІГі
+	void statistic_user();//ГЇГ® ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гѕ
+	void statistic_output_fille();//Г§Г ГЈГ°ГіГ§ГЁГІГј Г±ГІГ ГІГЁГ±ГІГЁГЄГі Гў ГґГ Г©Г«
 
-	void menegment_tests();// управление тестами
-	void add_test();// добавить тест
+	void menegment_tests();// ГіГЇГ°Г ГўГ«ГҐГ­ГЁГҐ ГІГҐГ±ГІГ Г¬ГЁ
+	void add_test();// Г¤Г®ГЎГ ГўГЁГІГј ГІГҐГ±ГІ
 	void delete_test();
-	void add_category();//  категорию
+	void add_category();//  ГЄГ ГІГҐГЈГ®Г°ГЁГѕ
 	void delete_category();
-	void add_questions();//добавить вопросс
+	void add_questions();//Г¤Г®ГЎГ ГўГЁГІГј ГўГ®ГЇГ°Г®Г±Г±
 	void delete_questions();
-	void inport_txt();// импортировать из файла
-	void export_txt();// експортировать в файл
+	void inport_txt();// ГЁГ¬ГЇГ®Г°ГІГЁГ°Г®ГўГ ГІГј ГЁГ§ ГґГ Г©Г«Г 
+	void export_txt();// ГҐГЄГ±ГЇГ®Г°ГІГЁГ°Г®ГўГ ГІГј Гў ГґГ Г©Г«
 };
 
 Admin::Admin() :User() {};
@@ -200,12 +257,12 @@ void Admin::menu()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль адміна : " << User::getName();
+		cout << "\n\n\n\n\n\n\t\t\t\tГЏГ°Г®ГґiГ«Гј Г Г¤Г¬ВіГ­Г  : " << User::getName();
 		int choice = Menu::select_vertical(
-			{ "Управлiння користувачами",
-			"Перегляд статистики",
-			"Управління тестуваннями",
-			"Вийти" },
+			{ "Г“ГЇГ°Г ГўГ«iГ­Г­Гї ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г Г¬ГЁ",
+			"ГЏГҐГ°ГҐГЈГ«ГїГ¤ Г±ГІГ ГІГЁГ±ГІГЁГЄГЁ",
+			"Г“ГЇГ°Г ГўГ«ВіГ­Г­Гї ГІГҐГ±ГІГіГўГ Г­Г­ГїГ¬ГЁ",
+			"Г‚ГЁГ©ГІГЁ" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -221,16 +278,16 @@ void Admin::menegment_user()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tУправління користувачами ";
+		cout << "\n\n\n\n\n\n\t\t\t\tГ“ГЇГ°Г ГўГ«ВіГ­Г­Гї ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г Г¬ГЁ ";
 		int choice = Menu::select_vertical(
-			{ "Додати користувача",
-			"Видалити користувача",
-			"Змінити інформацію користувача",
-			"Вийти" },
+			{ "Г„Г®Г¤Г ГІГЁ ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г ",
+			"Г‚ГЁГ¤Г Г«ГЁГІГЁ ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г ",
+			"Г‡Г¬ВіГ­ГЁГІГЁ ВіГ­ГґГ®Г°Г¬Г Г¶ВіГѕ ГЄГ®Г°ГЁГ±ГІГіГўГ Г·Г ",
+			"Г‚ГЁГ©ГІГЁ" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: //add_user();					break;
+		case 0: //add_user();				break;
 		case 1: /*delete_user();*/			break;
 		case 2: /*user_modification();*/	break;
 		case 3: return;
@@ -241,12 +298,12 @@ void Admin::menegment_user()
 void statistic() {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tСтатистика ";
+		cout << "\n\n\n\n\n\n\t\t\t\tГ‘ГІГ ГІГЁГ±ГІГЁГЄГ  ";
 		int choice = Menu::select_vertical(
-			{ "За категоріями",
-			"За тестом",
-			"За студентом",
-			"Вийти" },
+			{ "Г‡Г  ГЄГ ГІГҐГЈГ®Г°ВіГїГ¬ГЁ",
+			"Г‡Г  ГІГҐГ±ГІГ®Г¬",
+			"Г‡Г  Г±ГІГіГ¤ГҐГ­ГІГ®Г¬",
+			"Г‚ГЁГ©ГІГЁ" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -262,23 +319,29 @@ void Admin::menegment_tests()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tУпрпвління тестами ";
+		cout << "\n\n\n\n\n\n\t\t\t\tГ“ГЇГ°ГЇГўГ«ВіГ­Г­Гї ГІГҐГ±ГІГ Г¬ГЁ ";
 		int choice = Menu::select_vertical(
-			{ "Додати тест ",
-			"Видалити тест ",
-			"Додати категорію ",
-			"Видалити категорію",
-			"Вийти" },
+			{ "Г„Г®Г¤Г ГІГЁ ГІГҐГ±ГІ ",
+			"Г‚ГЁГ¤Г Г«ГЁГІГЁ ГІГҐГ±ГІ ",
+			"Г„Г®Г¤Г ГІГЁ ГЄГ ГІГҐГЈГ®Г°ВіГѕ ",
+			"Г‚ГЁГ¤Г Г«ГЁГІГЁ ГЄГ ГІГҐГЈГ®Г°ВіГѕ",
+			"Г‚ГЁГ©ГІГЁ" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: /*add_test();*/		break;
+		case 0: add_test();		break;
 		case 1: /*delete_test();*/			break;
 		case 2: /*add_category();*/		break;
 		case 3: /*delete_category();*/		break;
 		case 4: return;
 		}
 	} while (true);
+}
+
+void Admin::add_test()
+{
+	cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ \n";
+	test->add("test2.txt", "answertest2.txt");
 }
 
 class Testing_system
@@ -304,17 +367,17 @@ void Testing_system::menu()
 	do {
 		system("cls");
 		int choice = Menu::select_vertical(
-			{ "Увiйти",
-			"Зареєструватися",
-			"Налаштування",
-			"Вийти" },
+			{ "Г“ГўiГ©ГІГЁ",
+			"Г‡Г Г°ГҐВєГ±ГІГ°ГіГўГ ГІГЁГ±Гї",
+			"ГЌГ Г«Г ГёГІГіГўГ Г­Г­Гї",
+			"Г‚ГЁГ©ГІГЁ" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
 		case 0: login();		break;
 		case 1: Registration(); break;
 		case 2: settingConsole(); break;
-		case 3: exit(0);
+		case 3: return;
 		}
 	} while (true);
 }
@@ -346,7 +409,7 @@ void Testing_system::Registration()
 			student->menu();
 		}
 	}
-	else { cout << "Це ім'я зайняте "; system("pause");	}
+	else { cout << "Г–ГҐ ВіГ¬'Гї Г§Г Г©Г­ГїГІГҐ "; system("pause");	}
 }
 
 void Testing_system::login()
@@ -368,7 +431,7 @@ void Testing_system::login()
 	list<User*>* list = user.getValue(name);
 	if (!list) 
 	{ 
-		cout << "Профіль не знайдено \n";
+		cout << "ГЏГ°Г®ГґВіГ«Гј Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г® \n";
 		system("pause");
 		system("cls");
 		Registration(); }
