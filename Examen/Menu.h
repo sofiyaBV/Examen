@@ -10,33 +10,33 @@
 
 using namespace std;
 
-void settingConsole() {
-	cout << "¬ибер≥ть цв≥т консол≥" << endl;
-	cout << "0 Ч черный\
-		1 Ч синий\
-		2 Ч зеленый\
-		3 Ч голубой\
-		4 Ч красный\
-		 5 Ч лиловый\
-		6 Ч желтый\
-		7 Ч белый\
-		8 Ч серый" << endl;
-	int choice; cin >> choice;
-	switch (choice)
-	{
-	case 0: system("color 07"); break;
-	case 1: system("color 17"); break;
-	case 2: system("color 27"); break;
-	case 3: system("color 37"); break;
-	case 4: system("color 47"); break;
-	case 5: system("color 57"); break;
-	case 6: system("color 67"); break;
-	case 7: system("color 70"); break;
-	case 8: system("color 87"); break;
-	default:
-		break;
-	}
-}
+//void settingConsole() {
+//	cout << "¬ибер≥ть цв≥т консол≥" << endl;
+//	cout << "0 Ч черный\
+//		1 Ч синий\
+//		2 Ч зеленый\
+//		3 Ч голубой\
+//		4 Ч красный\
+//		 5 Ч лиловый\
+//		6 Ч желтый\
+//		7 Ч белый\
+//		8 Ч серый" << endl;
+//	int choice; cin >> choice;
+//	switch (choice)
+//	{
+//	case 0: system("color 07"); break;
+//	case 1: system("color 17"); break;
+//	case 2: system("color 27"); break;
+//	case 3: system("color 37"); break;
+//	case 4: system("color 47"); break;
+//	case 5: system("color 57"); break;
+//	case 6: system("color 67"); break;
+//	case 7: system("color 70"); break;
+//	case 8: system("color 87"); break;
+//	default:
+//		break;
+//	}
+//}
 
 
 class Menu
