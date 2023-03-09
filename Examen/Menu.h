@@ -11,6 +11,7 @@
 using namespace std;
 
 
+
 class Menu
 {
 public:
@@ -92,3 +93,33 @@ public:
 
 };
 
+
+void settingConsole() {
+
+	system("cls");
+	int choice = Menu::select_vertical(
+		{ "Чёрный",
+		"Синий",
+		"Зелёный",
+		"Голубой",
+		"Красный",
+		"Лиловый",
+		"Жёлтый",
+		"Серыё" },
+		HorizontalAlignment::Center);
+	switch (choice)
+	{
+	case 0: system("color 07"); break;
+	case 1: system("color 17"); break;
+	case 2: system("color 27"); break;
+	case 3: system("color 37"); break;
+	case 4: system("color 47"); break;
+	case 5: system("color 57"); break;
+	case 6: system("color 67"); break;
+	case 7: system("color 70"); break;
+	case 8: system("color 87"); break;
+	default:
+		break;
+
+	}
+}

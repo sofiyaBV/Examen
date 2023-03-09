@@ -3,43 +3,96 @@
 #include"Menu.h"
 #include<list>
 #include"BTree.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
 class test 
 {
-	string title;
-	size_t size;
-	list<string> question;
-protected:
-	test() : title("no name"), size(0) {}
-	test(string title, size_t size) : title(title), size(size = 1) {}
-	void print();
-	void setTitle(string name);
-	void setQuestion();
-	string getTitle();
-	size_t getSize();
-	string getQuestion();
 public:
-	void go_test();
+	
+	void add(string nameTest, string nameFileAnswer);
+
+	void go_test(string nameTest, string my_answer);
+
+	void result(string answer, string my_answer);
+
+	string get_name_answer(string name_test);
 };
 
-void test::print()
+void test::add(string nameTest, string nameFileAnswer)
 {
-	cout << "Назва : " << this->getTitle();
-	cout << "Кількість запитань : " << this->getSize();
+	string st;
+	ofstream out(nameTest);
+	ofstream out2(nameFileAnswer);
+	do {
+		bool a = true;
+		getline(cin, st);
+		cout << "Задание\n"; getline(cin, st); out << st << "\n";
+		cout << "Варианты ответов \n"; getline(cin, st); out << st << "\n";
+		cout << "Правильный ответ \n"; getline(cin, st); out2 << st << "\n";
+		cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a;
+		if (a == false) return;
+		system("cls");
+	} while (true);
+	out.close(); out2.close();
 }
 
-void test::setTitle(string name){	this->title = name;	}
-
-size_t test::getSize() { return size; }
-
-string test::getTitle() { return title; }
-
-void test::go_test()
+void test::go_test(string nameTest, string my_answer)
 {
-	print();
+	ifstream f;
+	ofstream out;
+	string str, otv;
+	int z = 1;
 
+	f.open(nameTest);
+	out.open(my_answer);
+	if (f && out)
+	{
+		while (getline(f, str))
+		{
+			system("cls");
+			cout << "Тест\n";
+			cout << "Задание номер " << z << "\n";
+			cout << str << "\n";
+			getline(f, str);
+			cout << str << "\n";
+			cout << "Ответ - "; cin >> otv;
+			z++;
+			out << otv << "\n";
+		}
+		f.close(); out.close();
+	}
+	else cout << "eror file\n"; return;
+}
+
+void test::result(string answer, string my_answer)
+{
+	int p = 0, n = 0;
+	string str, otv;
+	ifstream f1(answer);
+	ifstream f2(my_answer);
+	if (f1.is_open() && f2.is_open())
+	{
+		while (getline(f1, str) && getline(f2, otv))
+		{
+			if (str == otv) { p++; }
+			else { n++; }
+		}
+		f1.close(); f2.close();
+		cout << p << " - правильных\n";
+		cout << n << " - неправильных\n";
+		system("pause");
+		return;
+	}
+	else { cout << "eror file"; return; }
+}
+
+string test::get_name_answer(string name_test)
+{
+	return name_test + "_answer.txt";
 }
 
 class User
@@ -61,28 +114,23 @@ public:
 	
 };	
 
-User::User() : name("no name"), password("no pass") {};
+User::User(): name("no name"), password("no pass") {};
 
 User::User(string name, string pass) : name(name) { setPassword(pass); };
 
 User::~User(){}
 
-void User::setName(string name){	this->name = name;	}
+void   User::setName(string name)		{	this->name = name;	}
 
-string User::getName() const{	return name;	}
+string User::getName() const			{	return name;		}
 
-void User::setPassword(string pass) {	password = pass;	}
+void   User::setPassword(string pass)	{	password = pass;	}
 
-string User::getPassword() const {	return password; }
-
-//istream& operator>>(istream& in, User* p)
-//{
-//	cout << " Name : "; getline(in, p->name);
-//	return in;
-//}
+string User::getPassword() const		{	return password;	}
 
 class Student : public User
 {
+	test* test = nullptr;
 	string number;
 	string address;
 	string FIO;
@@ -92,12 +140,12 @@ public:
 	virtual ~Student();
 	virtual void menu() override;
 
-	void setNumber(string number) { this->number = number; }
-	void setAddress(string address) { this->address = address; }
-	void setFIO(string fio) { FIO = fio; }
-	string getNumber() const { return number; }
-	string getAddress()  const { return address; }
-	string get_FIO() const { return FIO; }
+	void setNumber(string number)	{ this->number = number;	}
+	void setAddress(string address) { this->address = address;  }
+	void setFIO(string fio)			{ FIO = fio;				}
+	string getNumber() const		{ return number;			}
+	string getAddress()  const		{ return address;			}
+	string get_FIO() const			{ return FIO;				}
 
 	void viewing_previons_tests();//посмотреть предыдущие тесты и их результаты
 	void take_a_test();//пройти тест
@@ -128,7 +176,7 @@ void Student::menu()
 		switch (choice)
 		{
 		case 0: /*viewing_previons_tests();*/		break;
-		case 1: /*take_a_test();*/					break;
+		case 1: take_a_test();					    break;
 		case 2: /*contine_test();*/					break;
 		case 3: profil();							break;
 		case 4: return;
@@ -154,7 +202,16 @@ void Student::viewing_previons_tests()
 
 void Student::take_a_test()
 {
-
+	cout << "Введите название теста\n";
+	string name_test;
+	getline(cin, name_test);
+	name_test += ".txt";
+	cout << "Введите название файла в котором будет храниться ответ\n";
+	string name_my_answer;
+	getline(cin, name_my_answer);
+	name_my_answer += ".txt";
+	test->go_test(name_test, name_my_answer);
+	test->result("answertest2.txt", name_test);
 }
 
 void Student::contine_test()
@@ -162,9 +219,9 @@ void Student::contine_test()
 
 }
 
-class Admin : public User, public test
+class Admin : public User
 {
-	BTree<string, list<test*>> tests;
+	test* test;
 public:
 	Admin();
 	Admin(string name, string pass);
@@ -230,7 +287,7 @@ void Admin::menegment_user()
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: //add_user();					break;
+		case 0: //add_user();				break;
 		case 1: /*delete_user();*/			break;
 		case 2: /*user_modification();*/	break;
 		case 3: return;
@@ -272,13 +329,19 @@ void Admin::menegment_tests()
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: /*add_test();*/		break;
+		case 0: add_test();		break;
 		case 1: /*delete_test();*/			break;
 		case 2: /*add_category();*/		break;
 		case 3: /*delete_category();*/		break;
 		case 4: return;
 		}
 	} while (true);
+}
+
+void Admin::add_test()
+{
+	cout << "Введите название \n";
+	test->add("test2.txt", "answertest2.txt");
 }
 
 class Testing_system
@@ -306,13 +369,15 @@ void Testing_system::menu()
 		int choice = Menu::select_vertical(
 			{ "Увiйти",
 			"Зареєструватися",
+			"Настройки",
 			"Вийти" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
 		case 0: login();		break;
 		case 1: Registration(); break;
-		case 2: return;
+		case 2: settingConsole(); break;
+		case 3: return;
 		}
 	} while (true);
 }
