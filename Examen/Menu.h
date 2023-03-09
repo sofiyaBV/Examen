@@ -10,6 +10,9 @@
 
 using namespace std;
 
+void settingConsole() {
+
+}
 
 class Menu
 {
