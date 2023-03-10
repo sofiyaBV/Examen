@@ -11,68 +11,73 @@ using namespace std;
 
 class test 
 {
+	list<string> file_name;
 public:
 	
-	void add(string nameTest, string nameFileAnswer);
+	void add(string name_test, string name_file_answer);
 
-	void go_test(string nameTest, string my_answer);
+	void go_test(string name_test, string my_answer);
 
-	void result(string answer, string my_answer);
+	void result(string name_faile_answer, string my_answer);
 
 	string get_name_answer(string name_test);
 };
 
-void test::add(string nameTest, string nameFileAnswer)
+void test::add(string name_test, string name_file_answer)
 {
+	system("cls");
 	string st;
-	ofstream out(nameTest);
-	ofstream out2(nameFileAnswer);
-	do {
+	ofstream out(name_test, ios::app);
+	ofstream out2(name_file_answer, ios::app);
+	if (out.is_open() && out2.is_open()) {
 		bool a = true;
-		getline(cin, st);
-		cout << "Задание\n"; getline(cin, st); out << st << "\n";
-		cout << "Варианты ответов \n"; getline(cin, st); out << st << "\n";
-		cout << "Правильный ответ \n"; getline(cin, st); out2 << st << "\n";
-		cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a;
-		if (a == false) return;
-		system("cls");
-	} while (true);
+		do {
+			getline(cin, st);
+			cout << "Задание\n"; getline(cin, st); out << st << "\n";
+			cout << "Варианты ответов \n"; getline(cin, st); out << st << "\n";
+			cout << "Правильный ответ \n"; getline(cin, st); out2 << st << "\n";
+			cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a;
+			if (a != 0 && a != 1) { return; }
+			if (a == false) return;
+			
+			system("cls");
+		} while (true);
+		file_name.push_back(name_test);
+	}
 	out.close(); out2.close();
 }
 
-void test::go_test(string nameTest, string my_answer)
+void test::go_test(string name_test, string my_answer)
 {
-	ifstream f;
-	ofstream out;
+	ifstream f(name_test);
+	ofstream out(my_answer);
 	string str, otv;
-	int z = 1;
-
-	f.open(nameTest);
-	out.open(my_answer);
-	if (f && out)
+	int count = 1;
+	if (f.is_open() && out.is_open())
 	{
 		while (getline(f, str))
 		{
 			system("cls");
 			cout << "Тест\n";
-			cout << "Задание номер " << z << "\n";
+			cout << "Задание номер " << count << "\n";
 			cout << str << "\n";
 			getline(f, str);
 			cout << str << "\n";
 			cout << "Ответ - "; cin >> otv;
-			z++;
+			count++;
 			out << otv << "\n";
 		}
+		file_name.push_back(name_test);
 		f.close(); out.close();
 	}
-	else cout << "eror file\n"; return;
+	else cout << "Ошибка открытия файла(\n"; system("pause");  return;
 }
 
-void test::result(string answer, string my_answer)
+void test::result(string name_file_answer, string my_answer)
 {
 	int p = 0, n = 0;
 	string str, otv;
-	ifstream f1(answer);
+	ifstream f1(name_file_answer);
 	ifstream f2(my_answer);
 	if (f1.is_open() && f2.is_open())
 	{
@@ -87,13 +92,11 @@ void test::result(string answer, string my_answer)
 		system("pause");
 		return;
 	}
-	else { cout << "eror file"; return; }
+	else { cout << "Ошибка открытия файла("; system("pause"); return; }
 }
 
 string test::get_name_answer(string name_test)
-{
-	return name_test + "_answer.txt";
-}
+{	return name_test + "_test_answer.txt";	}
 
 class User
 {
@@ -108,6 +111,8 @@ public:
 	string getPassword() const;
 	void setName(string name);
 	void setPassword(string pass);
+
+	void go(User* u);
 
 	friend ostream& operator<<(ostream& out, const User* p);
 	friend istream& operator>>(istream& in, User* p);
@@ -127,6 +132,8 @@ string User::getName() const			{	return name;		}
 void   User::setPassword(string pass)	{	password = pass;	}
 
 string User::getPassword() const		{	return password;	}
+
+void User::go(User* u) { u->menu(); }
 
 class Student : public User
 {
@@ -168,14 +175,14 @@ void Student::menu()
 		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль студента : " << User::getName();
 		int choice = Menu::select_vertical(
 			{ "Перегляд попереднiх результатiв",
-			"Пройти тест",
-			"Продовжити тест",
-			"Переглянути профіль",
-			"Вийти" },
+			  "Пройти тест",
+			  "Продовжити тест",
+			  "Переглянути профіль",
+			  "Вийти"							},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: /*viewing_previons_tests();*/		break;
+		case 0: viewing_previons_tests();		break;
 		case 1: take_a_test();					    break;
 		case 2: /*contine_test();*/					break;
 		case 3: profil();							break;
@@ -197,7 +204,23 @@ void Student::profil()
 
 void Student::viewing_previons_tests()
 {
-
+	cout << "Введите название теста\n";
+	string name_test, st;
+	getline(cin, name_test);
+	ifstream f("my_" + test->get_name_answer(name_test));
+	if (f.is_open())
+	{
+		getline(f, st);
+		cout << st;
+		system("pause");
+	}
+	else
+	{
+		cout << "eror\n";
+		system("pause");
+		return;
+	}
+	f.close();
 }
 
 void Student::take_a_test()
@@ -205,13 +228,8 @@ void Student::take_a_test()
 	cout << "Введите название теста\n";
 	string name_test;
 	getline(cin, name_test);
-	name_test += ".txt";
-	cout << "Введите название файла в котором будет храниться ответ\n";
-	string name_my_answer;
-	getline(cin, name_my_answer);
-	name_my_answer += ".txt";
-	test->go_test(name_test, name_my_answer);
-	test->result("answertest2.txt", name_test);
+	test->go_test(name_test + ".txt", "my_" + test->get_name_answer(name_test));
+	test->result(test->get_name_answer(name_test), "my_" + test->get_name_answer(name_test));
 }
 
 void Student::contine_test()
@@ -260,9 +278,9 @@ void Admin::menu()
 		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль адміна : " << User::getName();
 		int choice = Menu::select_vertical(
 			{ "Управлiння користувачами",
-			"Перегляд статистики",
-			"Управління тестуваннями",
-			"Вийти" },
+			  "Перегляд статистики",
+			  "Управління тестуваннями",
+			  "Вийти"					},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -281,9 +299,9 @@ void Admin::menegment_user()
 		cout << "\n\n\n\n\n\n\t\t\t\tУправління користувачами ";
 		int choice = Menu::select_vertical(
 			{ "Додати користувача",
-			"Видалити користувача",
-			"Змінити інформацію користувача",
-			"Вийти" },
+			  "Видалити користувача",
+			  "Змінити інформацію користувача",
+			  "Вийти"							},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -301,9 +319,9 @@ void statistic() {
 		cout << "\n\n\n\n\n\n\t\t\t\tСтатистика ";
 		int choice = Menu::select_vertical(
 			{ "За категоріями",
-			"За тестом",
-			"За студентом",
-			"Вийти" },
+			  "За тестом",
+			  "За студентом",
+			  "Вийти"			},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -322,10 +340,10 @@ void Admin::menegment_tests()
 		cout << "\n\n\n\n\n\n\t\t\t\tУпрпвління тестами ";
 		int choice = Menu::select_vertical(
 			{ "Додати тест ",
-			"Видалити тест ",
-			"Додати категорію ",
-			"Видалити категорію",
-			"Вийти" },
+			  "Видалити тест ",
+			  "Додати категорію ",
+			  "Видалити категорію",
+			  "Вийти"				},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -340,8 +358,14 @@ void Admin::menegment_tests()
 
 void Admin::add_test()
 {
-	cout << "Введите название \n";
-	test->add("test2.txt", "answertest2.txt");
+	cout << "Введите название теста\n";
+	string name_test;
+	getline(cin, name_test);
+	/*cout << "Введите название файла в котором будет храниться ответ\n";
+	string name_answer;
+	getline(cin, name_answer);*/
+	/*name_answer += "_answer.txt";*/
+	test->add(name_test + ".txt", test->get_name_answer(name_test));
 }
 
 class Testing_system
@@ -349,6 +373,7 @@ class Testing_system
 	/*list<User*> user;
 	size_t size;*/
 	BTree<string, list<User*>> user;
+	string file_user = "users_info.txt";
 	void login();
 	void Registration();
 public:
@@ -385,36 +410,73 @@ void Testing_system::menu()
 void Testing_system::Registration()
 {
 	string new_name, new_pass;
+	ofstream out(file_user, ios::app);
 	cout << "Name :"; getline(cin, new_name);
-	
-	list<User*>* new_list = user.getValue(new_name);
-	if (!new_list) {
-		cout << "Password :"; getline(cin, new_pass);
-		if (user.isEmpty() == 1) {
-			User* admin = new Admin(new_name, new_pass);
-			list<User*> newList;
-			newList.push_back(admin);
-			user.push_r(admin->getName(), newList);
-			admin->menu();
+	if (out.is_open())
+	{
+		out << new_name << "\n";
+		list<User*>* new_list = user.getValue(new_name);
+		if (!new_list) {
+			cout << "Password :"; getline(cin, new_pass);
+			out << new_pass << "\n";
+			if (user.isEmpty() == 1) {
+				User* admin = new Admin(new_name, new_pass);
+				list<User*> newList;
+				newList.push_back(admin);
+				user.push_r(admin->getName(), newList);
+				admin->menu();
+			}
+			else {
+				string new_FIO, new_number, new_address;
+				cout << "FIO :"; getline(cin, new_FIO);
+				cout << "Mobile number :"; getline(cin, new_number);
+				cout << "Home address :"; getline(cin, new_address);
+				User* student = new Student(new_name, new_pass, new_FIO, new_number, new_address);
+				list<User*> newList;
+				newList.push_back(student);
+				user.push_r(student->getName(), newList);
+				student->menu();
+			}
 		}
-		else {
-			string new_FIO, new_number, new_address;
-			cout << "FIO :"; getline(cin, new_FIO);
-			cout << "Mobile number :"; getline(cin, new_number);
-			cout << "Home address :"; getline(cin, new_address);
-			User* student = new Student(new_name, new_pass, new_FIO, new_number, new_address);
-			list<User*> newList;
-			newList.push_back(student);
-			user.push_r(student->getName(), newList);
-			student->menu();
-		}
+		else { cout << "Це ім'я зайняте "; system("pause"); }
 	}
-	else { cout << "Це ім'я зайняте "; system("pause");	}
+	else { cout << "eror"; system("pause"); return; }
 }
 
 void Testing_system::login()
 {
-	
+	string this_name, file_name, pass, file_pass;
+	ifstream f(file_user);
+	cout << "Name - ";
+	getline(cin, this_name);
+	if (f.is_open()) 
+	{
+		while (getline(f, file_name))
+		{
+			if (this_name == file_name)
+			{
+				cout << "Password - ";
+				getline(cin, pass);
+				getline(f, file_pass);
+				if (pass == file_pass)
+				{
+					cout << "log";
+					return;
+					system("pause");
+				}
+				else { cout << "eror pass"; system("pause"); return; }
+			}
+			else  
+			{
+				cout << "Профіль не знайдено \n";
+				system("pause");
+				system("cls");
+				return;
+			}
+		}
+		
+	}
+
 	//for(User* u : user)
 	//{
 	//	if (user == new_name)
@@ -426,21 +488,10 @@ void Testing_system::login()
 	{
 		if (new_name == user.rend()) {}
 	}*/
-	string name;
-	getline(cin, name);
-	list<User*>* list = user.getValue(name);
-	if (!list) 
-	{ 
-		cout << "Профіль не знайдено \n";
-		system("pause");
-		system("cls");
-		Registration(); }
-	else 
-	{
 	/*	string pass;
 		getline(cin, pass);
 		if(pass == user.getPassword())*/
 		
-	}
-
 }
+
+
