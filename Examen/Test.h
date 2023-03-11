@@ -6,21 +6,26 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include <stdio.h>
+#include <regex>
 using namespace std;
 
 class test 
 {
-	list<string> file_name;
 public:
 	
 	void add(string name_test, string name_file_answer);
 
 	void go_test(string name_test, string my_answer);
 
-	void result(string name_faile_answer, string my_answer);
+	void result(string name_user, string name_faile_answer, string my_answer);
 
 	string get_name_answer(string name_test);
+
+	void files();
+
+	bool exam(string st);
+
 };
 
 void test::add(string name_test, string name_file_answer)
@@ -29,22 +34,58 @@ void test::add(string name_test, string name_file_answer)
 	string st;
 	ofstream out(name_test, ios::app);
 	ofstream out2(name_file_answer, ios::app);
-	if (out.is_open() && out2.is_open()) {
-		bool a = true;
-		do {
-			getline(cin, st);
-			cout << "Задание\n"; getline(cin, st); out << st << "\n";
-			cout << "Варианты ответов \n"; getline(cin, st); out << st << "\n";
-			cout << "Правильный ответ \n"; getline(cin, st); out2 << st << "\n";
-			cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a;
-			if (a != 0 && a != 1) { return; }
-			if (a == false) return;
-			
-			system("cls");
-		} while (true);
-		file_name.push_back(name_test);
+	ofstream out3("name_tests.txt", ios::app);
+	
+		if (out.is_open() && out2.is_open() && out3.is_open()) 
+		{
+			char a;
+			do {
+				cout << "Задание\n"; getline(cin, st); out << st << "\n";
+				cout << "Варианты ответов \n"; getline(cin, st); out << st << "\n";
+				cout << "Правильный ответ \n"; getline(cin, st); out2 << st << "\n";
+				cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a; cin.ignore();
+
+				if (a == '0')
+				{
+					if (exam(name_test) == false) { out3 << name_test << "\n"; }
+					out.close(); out2.close(); out3.close();
+					return;
+				}
+				else if (a != '1')
+				{
+					out.close(); out2.close(); out3.close();
+					cout << "Ошибка,файл закрыт на последнем вопроссе\n";
+					system("pause");
+					a = false;
+					return;
+				}
+				system("cls");
+			} while (true);
+
+
+		}
+		out.close(); out2.close(); out3.close();
+	
+}
+
+bool test::exam(string st)
+{
+	ifstream f("name_tests.txt");
+	string str;
+	if (f.is_open())
+	{
+		while (getline(f, str))
+		{
+			if (str == st)
+			{
+				f.close();
+				return true;
+			}
+		}
 	}
-	out.close(); out2.close();
+	f.close();
+	return false;
+
 }
 
 void test::go_test(string name_test, string my_answer)
@@ -67,19 +108,24 @@ void test::go_test(string name_test, string my_answer)
 			count++;
 			out << otv << "\n";
 		}
-		file_name.push_back(name_test);
 		f.close(); out.close();
 	}
-	else cout << "Ошибка открытия файла(\n"; system("pause");  return;
+	else 
+	{ 
+		cout << "Ошибка открытия файла(\n"; system("pause"); 
+		f.close(); out.close();
+		return; 
+	}
 }
 
-void test::result(string name_file_answer, string my_answer)
+void test::result(string name_user, string name_file_answer, string my_answer)
 {
 	int p = 0, n = 0;
 	string str, otv;
 	ifstream f1(name_file_answer);
 	ifstream f2(my_answer);
-	if (f1.is_open() && f2.is_open())
+	ofstream out(name_user + "col_otv_" + my_answer ,ios::app);
+	if (f1.is_open() && f2.is_open() && out.is_open())
 	{
 		while (getline(f1, str) && getline(f2, otv))
 		{
@@ -90,13 +136,34 @@ void test::result(string name_file_answer, string my_answer)
 		cout << p << " - правильных\n";
 		cout << n << " - неправильных\n";
 		system("pause");
+		out << "По этому тесту у вас " << p << " из " << p + n << "\n";
+		f1.close(); out.close(); f2.close();
 		return;
 	}
-	else { cout << "Ошибка открытия файла("; system("pause"); return; }
+	else { 
+		cout << "Ошибка открытия файла("; 
+		system("pause"); 
+		f1.close(); out.close(); f2.close();
+		return; 
+	}
 }
 
 string test::get_name_answer(string name_test)
 {	return name_test + "_test_answer.txt";	}
+
+void test::files()
+{
+	ifstream f("name_tests.txt");
+	string st;
+	if (f.is_open())
+	{
+		while (getline(f, st)) 
+		{
+			cout << " - " << st << "\n"; 
+		}
+	}
+	f.close();
+}
 
 class User
 {
@@ -204,19 +271,21 @@ void Student::profil()
 
 void Student::viewing_previons_tests()
 {
+	this->test->files();
 	cout << "Введите название теста\n";
 	string name_test, st;
 	getline(cin, name_test);
-	ifstream f("my_" + test->get_name_answer(name_test));
+	ifstream f(this->getName() + "col_otv_my_" + test->get_name_answer(name_test));
 	if (f.is_open())
 	{
+		cout << " ~ " << name_test << "\n";
 		getline(f, st);
-		cout << st;
+		cout << st; 
 		system("pause");
 	}
 	else
 	{
-		cout << "eror\n";
+		cout << "Вы не проходили этот тест\n";
 		system("pause");
 		return;
 	}
@@ -225,21 +294,17 @@ void Student::viewing_previons_tests()
 
 void Student::take_a_test()
 {
+	this->test->files();
 	cout << "Введите название теста\n";
 	string name_test;
 	getline(cin, name_test);
-	test->go_test(name_test + ".txt", "my_" + test->get_name_answer(name_test));
-	test->result(test->get_name_answer(name_test), "my_" + test->get_name_answer(name_test));
-}
-
-void Student::contine_test()
-{
-
+	this->test->go_test(name_test + ".txt", "my_" + test->get_name_answer(name_test));
+	this->test->result(this->getName(), test->get_name_answer(name_test), "my_" + test->get_name_answer(name_test));
 }
 
 class Admin : public User
 {
-	test* test;
+	test* test = nullptr;
 public:
 	Admin();
 	Admin(string name, string pass);
@@ -343,35 +408,100 @@ void Admin::menegment_tests()
 			  "Видалити тест ",
 			  "Додати категорію ",
 			  "Видалити категорію",
+			 "Додати запитання ",
+			 "Видалити запитання",
 			  "Вийти"				},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
 		case 0: add_test();		break;
-		case 1: /*delete_test();*/			break;
+		case 1: delete_test();			break;
 		case 2: /*add_category();*/		break;
 		case 3: /*delete_category();*/		break;
-		case 4: return;
+		case 4: add_questions();		break;
+		case 5: delete_questions();		break;
+		case 6: return;
 		}
 	} while (true);
 }
 
 void Admin::add_test()
 {
+	test->files();
 	cout << "Введите название теста\n";
 	string name_test;
 	getline(cin, name_test);
-	/*cout << "Введите название файла в котором будет храниться ответ\n";
-	string name_answer;
-	getline(cin, name_answer);*/
-	/*name_answer += "_answer.txt";*/
 	test->add(name_test + ".txt", test->get_name_answer(name_test));
 }
 
+void Admin::delete_test()
+{
+	test->files();
+	cout << "Введите название теста\n";
+	string name_test, str;
+	string temp = "temp.txt";
+	getline(cin, name_test);
+	ifstream f("name_tests.txt");
+	ofstream out(temp);
+	if (f.is_open() && out.is_open()) 
+	{
+		while (getline(f, str)) 
+		{
+			if (name_test != str)
+			{
+				out << str << "\n";
+			}
+			else 
+			{
+				remove(name_test.c_str());
+				name_test = regex_replace(name_test, regex(".txt"), "");
+				name_test += "_test_answer.txt";
+				remove(name_test.c_str());
+				cout << "Тест был удалён\n";
+				system("pause");
+			}
+		}
+	}
+	f.close(); out.close();
+	ifstream ft(temp);
+	ofstream out2("name_tests.txt");
+	if (ft.is_open() && out2.is_open())
+	{
+		while (getline(ft, str)) 
+		{
+			out2 << str << "\n";
+		}
+	}
+	remove(temp.c_str());
+	ft.close(); out2.close();
+}
+
+void Admin::add_questions()
+{
+	test->files();
+	cout << "Введите название теста\n";
+	string name_test, str;
+	getline(cin, name_test);
+	ifstream f("name_tests.txt");
+	if (f.is_open())
+	{
+		while (getline(f, str))
+		{
+			if (name_test == str)
+			{
+				f.close();
+				test->add(name_test, test->get_name_answer(name_test));
+
+			}
+			
+		}
+	}
+	f.close();	
+}
+
+
 class Testing_system
 {
-	/*list<User*> user;
-	size_t size;*/
 	BTree<string, list<User*>> user;
 	string file_user = "users_info.txt";
 	void login();
@@ -411,9 +541,9 @@ void Testing_system::Registration()
 {
 	string new_name, new_pass;
 	ofstream out(file_user, ios::app);
-	cout << "Name :"; getline(cin, new_name);
 	if (out.is_open())
 	{
+		cout << "Name :"; getline(cin, new_name);
 		out << new_name << "\n";
 		list<User*>* new_list = user.getValue(new_name);
 		if (!new_list) {
@@ -460,7 +590,7 @@ void Testing_system::login()
 				getline(f, file_pass);
 				if (pass == file_pass)
 				{
-					cout << "log";
+					cout << "тут происходит вход в систему от определённого человека";
 					return;
 					system("pause");
 				}
