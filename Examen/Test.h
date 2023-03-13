@@ -8,6 +8,8 @@
 #include <string>
 #include <stdio.h>
 #include <regex>
+
+
 using namespace std;
 
 class test 
@@ -22,61 +24,66 @@ public:
 
 	string get_name_answer(string name_test);
 
-	void files();
+	void files(string name_file);
 
-	bool exam(string st);
+	bool exam(string base, string str);
 
 };
 
 void test::add(string name_test, string name_file_answer)
 {
 	system("cls");
-	string st;
-	ofstream out(name_test, ios::app);
-	ofstream out2(name_file_answer, ios::app);
-	ofstream out3("name_tests.txt", ios::app);
-	
-		if (out.is_open() && out2.is_open() && out3.is_open()) 
-		{
-			char a;
-			do {
-				cout << "Задание\n"; getline(cin, st); out << st << "\n";
-				cout << "Варианты ответов \n"; getline(cin, st); out << st << "\n";
-				cout << "Правильный ответ \n"; getline(cin, st); out2 << st << "\n";
-				cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a; cin.ignore();
-
-				if (a == '0')
-				{
-					if (exam(name_test) == false) { out3 << name_test << "\n"; }
-					out.close(); out2.close(); out3.close();
-					return;
-				}
-				else if (a != '1')
-				{
-					out.close(); out2.close(); out3.close();
-					cout << "Ошибка,файл закрыт на последнем вопроссе\n";
+	ofstream out_test(name_test + ".txt", ios::app);
+	ofstream out_answer(name_file_answer + ".txt", ios::app);
+	ofstream out_base("base_tests.txt", ios::app);
+	if (out_test.is_open() && out_answer.is_open() && out_base.is_open())
+	{
+		char a;
+		do {
+			string st;
+			cout << "Задание\n"; getline(cin, st); out_test << st << "\n";
+			cout << "Варианты ответов \n"; getline(cin, st); out_test << st << "\n";
+			cout << "Правильный ответ \n"; getline(cin, st); out_answer << st << "\n";
+			cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a; cin.ignore();
+			if (a == '0')
+			{
+				if (exam("base_test.txt", name_test) == false) 
+				{ 
+					out_base << name_test << "\n"; 
+					cout << "Тест успешно добавлен\n";
 					system("pause");
-					a = false;
-					return;
 				}
-				system("cls");
-			} while (true);
-
-
-		}
-		out.close(); out2.close(); out3.close();
+				out_test.close(); out_answer.close(); out_base.close();
+				return;
+			}
+			else if (a != '1')
+			{
+				out_test.close(); out_answer.close(); out_base.close();
+				cout << "Был выбран некоректный вариент,файл закрыт на последнем вопроссе\n";
+				system("pause");
+				a = false;
+				return;
+			}
+			system("cls");
+		} while (true);
+	}
+	else
+	{
+		cout << "Оштбка при открытии файлов для записа\n";
+		system("pause");
+	}
 	
 }
 
-bool test::exam(string st)
+bool test::exam(string base, string str)
 {
-	ifstream f("name_tests.txt");
-	string str;
+	ifstream f(base);
+	string buff_str;
 	if (f.is_open())
 	{
-		while (getline(f, str))
+		while (getline(f, buff_str))
 		{
-			if (str == st)
+			if (buff_str == str)
 			{
 				f.close();
 				return true;
@@ -149,11 +156,11 @@ void test::result(string name_user, string name_file_answer, string my_answer)
 }
 
 string test::get_name_answer(string name_test)
-{	return name_test + "_test_answer.txt";	}
+{	return name_test + "_answer";	}
 
-void test::files()
+void test::files(string file_name)
 {
-	ifstream f("name_tests.txt");
+	ifstream f(file_name);
 	string st;
 	if (f.is_open())
 	{
@@ -169,6 +176,12 @@ class User
 {
 	string name;
 	string password;
+
+protected:
+	string base_tests = "base_tests.txt";
+	string base_users = "base_users.txt";
+	string base_category = "base_category.txt";
+
 public:
 	User();
 	User(string name, string pass);
@@ -271,7 +284,7 @@ void Student::profil()
 
 void Student::viewing_previons_tests()
 {
-	this->test->files();
+	this->test->files("name_test");
 	cout << "Введите название теста\n";
 	string name_test, st;
 	getline(cin, name_test);
@@ -294,7 +307,7 @@ void Student::viewing_previons_tests()
 
 void Student::take_a_test()
 {
-	this->test->files();
+	this->test->files("name_test");
 	cout << "Введите название теста\n";
 	string name_test;
 	getline(cin, name_test);
@@ -416,10 +429,10 @@ void Admin::menegment_tests()
 		{
 		case 0: add_test();		break;
 		case 1: delete_test();			break;
-		case 2: /*add_category();*/		break;
+		case 2: add_category();		break;
 		case 3: /*delete_category();*/		break;
 		case 4: add_questions();		break;
-		case 5: delete_questions();		break;
+		case 5: //delete_questions();		break;
 		case 6: return;
 		}
 	} while (true);
@@ -427,58 +440,144 @@ void Admin::menegment_tests()
 
 void Admin::add_test()
 {
-	test->files();
-	cout << "Введите название теста\n";
-	string name_test;
-	getline(cin, name_test);
-	test->add(name_test + ".txt", test->get_name_answer(name_test));
+	cout << "~ Существующие категории\n";
+	test->files(base_category);
+	cout << "Введите название нужной категории : \n";
+	string name_category, name_test, buff_str;
+	getline(cin, name_category);
+	if (test->exam(base_category, name_category) == 1)
+	{
+		system("cls");
+		cout << "~ Существующие тесты \n";
+		//test->files(base_tests);
+		/*while (getline(f, buff_str))
+		{
+			if (buff_str == name_category)
+			{
+				cout << "-" << buff_str << "\n";
+			}
+		}*/
+		cout << "Введите название теста\n";
+		getline(cin, name_test);
+		name_test = name_category + "_" + name_test;
+		if (test->exam(base_tests, name_test) == 0)
+		{
+			test->add(name_test, test->get_name_answer(name_test));
+		}
+		else
+		{
+			cout << "Тест с таким именем уже существует. Хотите добавить вопрос?1 - да , 0 - нет\n";
+			bool a; cin >> a; cin.ignore();
+			if (a == true)
+			{
+				//добавление вопроса
+			}
+			else return;
+		}
+	}
+	else
+	{
+		cout << "Твкой категории нет. Создать новую? ?1 - да , 0 - нет\n";
+		bool a; cin >> a; cin.ignore();
+		if (a == true)
+		{
+			//добавление категории
+		}
+		else return;
+	}
 }
 
 void Admin::delete_test()
 {
-	test->files();
-	cout << "Введите название теста\n";
-	string name_test, str;
-	string temp = "temp.txt";
-	getline(cin, name_test);
-	ifstream f("name_tests.txt");
-	ofstream out(temp);
-	if (f.is_open() && out.is_open()) 
+	cout << "~ Существующие категории\n";
+	test->files(base_category);
+	cout << "Введите название нужной категории : \n";
+	string name_category, name_test, buff_str;
+	getline(cin, name_category);
+	if (test->exam(base_category, name_category) == 1)
 	{
-		while (getline(f, str)) 
+		cout << "~ Существующие тесты \n";
+		//test->files("name_test");
+		cout << "Введите название теста\n";
+		string temp = "temp.txt";
+		getline(cin, name_test);
+		name_test = name_category + "_" + name_test;
+		ifstream f(base_tests);
+		ofstream out(temp);
+		if (f.is_open() && out.is_open())
 		{
-			if (name_test != str)
+			while (getline(f, buff_str))
 			{
-				out << str << "\n";
-			}
-			else 
-			{
-				remove(name_test.c_str());
-				name_test = regex_replace(name_test, regex(".txt"), "");
-				name_test += "_test_answer.txt";
-				remove(name_test.c_str());
-				cout << "Тест был удалён\n";
-				system("pause");
+				if (name_test != buff_str)
+				{
+					out << buff_str << "\n";
+				}
+				else
+				{
+					name_test += ".txt";
+					remove(name_test.c_str());
+					name_test = regex_replace(name_test, regex(".txt"), "");
+					name_test += "_answer.txt";
+					remove(name_test.c_str());
+					cout << "Тест был удалён\n";
+					system("pause");
+				}
 			}
 		}
-	}
-	f.close(); out.close();
-	ifstream ft(temp);
-	ofstream out2("name_tests.txt");
-	if (ft.is_open() && out2.is_open())
-	{
-		while (getline(ft, str)) 
+		f.close(); out.close();
+		ifstream ft(temp);
+		ofstream out2("name_tests.txt");
+		if (ft.is_open() && out2.is_open())
 		{
-			out2 << str << "\n";
+			while (getline(ft, buff_str))
+			{
+				out2 << buff_str << "\n";
+			}
 		}
+		remove(temp.c_str());
+
+		ft.close(); out2.close();
 	}
-	remove(temp.c_str());
-	ft.close(); out2.close();
+}
+
+void Admin::add_category()
+{
+	cout << "~ Уже имеющиеся категории ~\n";
+	test->files(base_category);//тут выводим все имеющиеся категории
+	cout << "Введите название категории что ходите добавить\n";
+	string name_category, buff_str;
+	getline(cin, name_category);
+	ifstream f(base_category);//открываем поток для проверки
+	if (f.is_open())
+	{
+		
+		if (test->exam(base_category, name_category) == 1) 
+		{
+			cout << "Такая категория уже существует\n";
+			system("pause");
+			return;
+		}
+		f.close();
+		ofstream out(base_category, ios::app);
+		if (out.is_open())
+		{	out << name_category << "\n";	}//записываем если нет совпадений
+		else 
+		{
+			cout << "Ошибка открытия файла для чтения\n";
+			system("pause");
+		}
+		out.close();
+	}
+	else
+	{
+		cout << "Ошибка открытия файла для записи\n";
+		system("pause");
+	}
 }
 
 void Admin::add_questions()
 {
-	test->files();
+	test->files("name_questions");
 	cout << "Введите название теста\n";
 	string name_test, str;
 	getline(cin, name_test);
@@ -590,7 +689,9 @@ void Testing_system::login()
 				getline(f, file_pass);
 				if (pass == file_pass)
 				{
-					cout << "тут происходит вход в систему от определённого человека";
+
+
+					//cout << "тут происходит вход в систему от определённого человека";
 					return;
 					system("pause");
 				}
