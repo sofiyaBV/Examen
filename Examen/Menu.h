@@ -96,14 +96,16 @@ void settingConsole() {
 
 	system("cls");
 	int choice = Menu::select_vertical(
-		{ "×¸ðíûé",
-		"Ñèíèé",
-		"Çåë¸íûé",
-		"Ãîëóáîé",
-		"Êðàñíûé",
-		"Ëèëîâûé",
-		"Æ¸ëòûé",
-		"Ñåðû¸" },
+
+		{ "Чёрный",
+		"Синий",
+		"Зелёный",
+		"Голубой",
+		"Красный",
+		"Лиловый",
+		"Жёлтый",
+		"Серыё" },
+
 		HorizontalAlignment::Center);
 	switch (choice)
 	{
