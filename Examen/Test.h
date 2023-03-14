@@ -1,5 +1,5 @@
-#pragma once
-#include <iostream> 
+п»ї#pragma once
+#include <iostream>В 
 #include"Menu.h"
 #include<list>
 #include"BTree.h"
@@ -15,19 +15,15 @@ using namespace std;
 class test 
 {
 public:
-	
+
 	void add(string name_test, string name_file_answer);
-
 	void go_test(string name_test, string my_answer);
-
 	void result(string name_user, string name_faile_answer, string my_answer);
-
 	string get_name_answer(string name_test);
-
 	void files(string name_file);
-
-	bool exam(string base, string str);
-
+	void file_category_tests(string categort);
+	bool exam_base(string base, string str);
+	bool exam_category(string category, string str);
 };
 
 void test::add(string name_test, string name_file_answer)
@@ -41,16 +37,16 @@ void test::add(string name_test, string name_file_answer)
 		char a;
 		do {
 			string st;
-			cout << "Задание\n"; getline(cin, st); out_test << st << "\n";
-			cout << "Варианты ответов \n"; getline(cin, st); out_test << st << "\n";
-			cout << "Правильный ответ \n"; getline(cin, st); out_answer << st << "\n";
-			cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a; cin.ignore();
+			cout << "Р—Р°РґР°РЅРёРµ\n"; getline(cin, st); out_test << st << "\n";
+			cout << "Р’Р°СЂРёР°РЅС‚С‹ РѕС‚РІРµС‚РѕРІ \n"; getline(cin, st); out_test << st << "\n";
+			cout << "РџСЂР°РІРёР»СЊРЅС‹Р№ РѕС‚РІРµС‚ \n"; getline(cin, st); out_answer << st << "\n";
+			cout << "РґР°Р±РІРёС‚СЊ РµС‰Рµ?(0 - РЅРµС‚, 1 - РґР°)\n"; cin >> a; cin.ignore();
 			if (a == '0')
 			{
-				if (exam("base_test.txt", name_test) == false) 
+				if (exam_base("base_test.txt", name_test) == false)
 				{ 
 					out_base << name_test << "\n"; 
-					cout << "Тест успешно добавлен\n";
+					cout << "РўРµСЃС‚ СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅ\n";
 					system("pause");
 				}
 				out_test.close(); out_answer.close(); out_base.close();
@@ -59,7 +55,7 @@ void test::add(string name_test, string name_file_answer)
 			else if (a != '1')
 			{
 				out_test.close(); out_answer.close(); out_base.close();
-				cout << "Был выбран некоректный вариент,файл закрыт на последнем вопроссе\n";
+				cout << "Р‘С‹Р» РІС‹Р±СЂР°РЅ РЅРµРєРѕСЂРµРєС‚РЅС‹Р№ РІР°СЂРёРµРЅС‚,С„Р°Р№Р» Р·Р°РєСЂС‹С‚ РЅР° РїРѕСЃР»РµРґРЅРµРј РІРѕРїСЂРѕСЃСЃРµ\n";
 				system("pause");
 				a = false;
 				return;
@@ -69,13 +65,13 @@ void test::add(string name_test, string name_file_answer)
 	}
 	else
 	{
-		cout << "Оштбка при открытии файлов для записа\n";
+		cout << "РћС€С‚Р±РєР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»РѕРІ РґР»СЏ Р·Р°РїРёСЃР°\n";
 		system("pause");
 	}
 	
 }
 
-bool test::exam(string base, string str)
+bool test::exam_base(string base, string str)
 {
 	ifstream f(base);
 	string buff_str;
@@ -92,7 +88,14 @@ bool test::exam(string base, string str)
 	}
 	f.close();
 	return false;
+}
 
+bool test::exam_category(string category, string str)
+{
+	size_t s = category.size();
+	str.resize(s);
+	if (category == str) { return true; }
+	else { return false; }
 }
 
 void test::go_test(string name_test, string my_answer)
@@ -101,17 +104,17 @@ void test::go_test(string name_test, string my_answer)
 	ofstream out(my_answer);
 	string str, otv;
 	int count = 1;
-	if (f.is_open() && out.is_open())
+	/*if (f.is_open() && out.is_open())
 	{
 		while (getline(f, str))
 		{
 			system("cls");
-			cout << "Тест\n";
-			cout << "Задание номер " << count << "\n";
+			cout << "РўРµСЃС‚\n";
+			cout << "Р—Р°РґР°РЅРёРµ РЅРѕРјРµСЂ " << count << "\n";
 			cout << str << "\n";
 			getline(f, str);
 			cout << str << "\n";
-			cout << "Ответ - "; cin >> otv;
+			cout << "РћС‚РІРµС‚ - "; cin >> otv;
 			count++;
 			out << otv << "\n";
 		}
@@ -119,10 +122,10 @@ void test::go_test(string name_test, string my_answer)
 	}
 	else 
 	{ 
-		cout << "Ошибка открытия файла(\n"; system("pause"); 
+		cout << "РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ С„Р°Р№Р»Р°(\n"; system("pause"); 
 		f.close(); out.close();
 		return; 
-	}
+	}*/
 }
 
 void test::result(string name_user, string name_file_answer, string my_answer)
@@ -140,15 +143,15 @@ void test::result(string name_user, string name_file_answer, string my_answer)
 			else { n++; }
 		}
 		f1.close(); f2.close();
-		cout << p << " - правильных\n";
-		cout << n << " - неправильных\n";
+		cout << p << " - РїСЂР°РІРёР»СЊРЅС‹С…\n";
+		cout << n << " - РЅРµРїСЂР°РІРёР»СЊРЅС‹С…\n";
 		system("pause");
-		out << "По этому тесту у вас " << p << " из " << p + n << "\n";
+		out << "РџРѕ СЌС‚РѕРјСѓ С‚РµСЃС‚Сѓ Сѓ РІР°СЃ " << p << " РёР· " << p + n << "\n";
 		f1.close(); out.close(); f2.close();
 		return;
 	}
 	else { 
-		cout << "Ошибка открытия файла("; 
+		cout << "РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ С„Р°Р№Р»Р°("; 
 		system("pause"); 
 		f1.close(); out.close(); f2.close();
 		return; 
@@ -165,11 +168,25 @@ void test::files(string file_name)
 	if (f.is_open())
 	{
 		while (getline(f, st)) 
-		{
-			cout << " - " << st << "\n"; 
-		}
+		{	cout << " - " << st << "\n"; }
 	}
 	f.close();
+}
+
+void test::file_category_tests(string category)
+{
+	string buff_str;
+	ifstream f("base_tests.txt");
+	if (f.is_open()) {
+		while (getline(f, buff_str))
+		{
+			if (exam_category(category, buff_str) == true)
+			{
+				buff_str = regex_replace(buff_str, regex(category + "_"), "");
+				cout << " - " << buff_str << "\n";
+			}
+		}
+	}
 }
 
 class User
@@ -200,19 +217,12 @@ public:
 };	
 
 User::User(): name("no name"), password("no pass") {};
-
 User::User(string name, string pass) : name(name) { setPassword(pass); };
-
 User::~User(){}
-
 void   User::setName(string name)		{	this->name = name;	}
-
 string User::getName() const			{	return name;		}
-
 void   User::setPassword(string pass)	{	password = pass;	}
-
 string User::getPassword() const		{	return password;	}
-
 void User::go(User* u) { u->menu(); }
 
 class Student : public User
@@ -223,25 +233,25 @@ class Student : public User
 	string FIO;
 public:
 	Student();
+	Student(string name, string pass);
 	Student(string name, string pass, string number, string address, string FIO);
 	virtual ~Student();
 	virtual void menu() override;
-
 	void setNumber(string number)	{ this->number = number;	}
 	void setAddress(string address) { this->address = address;  }
 	void setFIO(string fio)			{ FIO = fio;				}
 	string getNumber() const		{ return number;			}
 	string getAddress()  const		{ return address;			}
 	string get_FIO() const			{ return FIO;				}
-
-	void viewing_previons_tests();//посмотреть предыдущие тесты и их результаты
-	void take_a_test();//пройти тест
-	void contine_test();//продолжить тест
-
+	void viewing_previons_tests();//РїРѕСЃРјРѕС‚СЂРµС‚СЊ РїСЂРµРґС‹РґСѓС‰РёРµ С‚РµСЃС‚С‹ Рё РёС… СЂРµР·СѓР»СЊС‚Р°С‚С‹
+	void take_a_test();//РїСЂРѕР№С‚Рё С‚РµСЃС‚
+	void contine_test();//РїСЂРѕРґРѕР»Р¶РёС‚СЊ С‚РµСЃС‚
 	void profil();
 };
 
 Student::Student() : User(), number("no number"), address("no address"), FIO("no FIO") {};
+
+Student::Student(string name, string pass) : User(name, pass) {}
 
 Student::Student(string name, string pass, string number, string address, string FIO)
 	: User(name, pass), number(number), address(address), FIO(FIO) {};
@@ -252,17 +262,17 @@ void Student::menu()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль студента : " << User::getName();
+		cout << "\n\n\n\n\n\n\t\t\t\tРџСЂРѕС„iР»СЊ СЃС‚СѓРґРµРЅС‚Р° : " << User::getName();
 		int choice = Menu::select_vertical(
-			{ "Перегляд попереднiх результатiв",
-			  "Пройти тест",
-			  "Продовжити тест",
-			  "Переглянути профіль",
-			  "Вийти"							},
+			{ "РџРµСЂРµРіР»СЏРґ РїРѕРїРµСЂРµРґРЅiС… СЂРµР·СѓР»СЊС‚Р°С‚iРІ",
+			  "РџСЂРѕР№С‚Рё С‚РµСЃС‚",
+			  "РџСЂРѕРґРѕРІР¶РёС‚Рё С‚РµСЃС‚",
+			  "РџРµСЂРµРіР»СЏРЅСѓС‚Рё РїСЂРѕС„С–Р»СЊ",
+			  "Р’РёР№С‚Рё"							},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: viewing_previons_tests();		break;
+		case 0: viewing_previons_tests();			break;
 		case 1: take_a_test();					    break;
 		case 2: /*contine_test();*/					break;
 		case 3: profil();							break;
@@ -285,7 +295,7 @@ void Student::profil()
 void Student::viewing_previons_tests()
 {
 	this->test->files("name_test");
-	cout << "Введите название теста\n";
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°\n";
 	string name_test, st;
 	getline(cin, name_test);
 	ifstream f(this->getName() + "col_otv_my_" + test->get_name_answer(name_test));
@@ -298,7 +308,7 @@ void Student::viewing_previons_tests()
 	}
 	else
 	{
-		cout << "Вы не проходили этот тест\n";
+		cout << "Р’С‹ РЅРµ РїСЂРѕС…РѕРґРёР»Рё СЌС‚РѕС‚ С‚РµСЃС‚\n";
 		system("pause");
 		return;
 	}
@@ -307,12 +317,37 @@ void Student::viewing_previons_tests()
 
 void Student::take_a_test()
 {
-	this->test->files("name_test");
-	cout << "Введите название теста\n";
+	cout << "~ РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ РєР°С‚РµРіРѕСЂРёРё\n";
+	test->files(base_category);
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РЅСѓР¶РЅРѕР№ РєР°С‚РµРіРѕСЂРёРё : \n";
+	string name_category, name_test, buff_str;
+	getline(cin, name_category);
+	if (test->exam_base(base_category, name_category) == 1)
+	{
+		system("cls");
+		cout << "~ РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ С‚РµСЃС‚С‹ \n";
+		ifstream f(base_tests);
+		if (f.is_open()) {
+			while (getline(f, buff_str))
+			{
+				if (test->exam_category(name_category, buff_str) == true)
+				{
+					buff_str = regex_replace(buff_str, regex(name_category + "_"), "");
+					cout << " - " << buff_str << "\n";
+				}
+			}
+		}
+		cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°\n";
+		getline(cin, name_test);
+		name_test = name_category + "_" + name_test;
+	}
+	
+	/*this->test->files("name_test");
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°\n";
 	string name_test;
 	getline(cin, name_test);
 	this->test->go_test(name_test + ".txt", "my_" + test->get_name_answer(name_test));
-	this->test->result(this->getName(), test->get_name_answer(name_test), "my_" + test->get_name_answer(name_test));
+	this->test->result(this->getName(), test->get_name_answer(name_test), "my_" + test->get_name_answer(name_test));*/
 }
 
 class Admin : public User
@@ -323,26 +358,28 @@ public:
 	Admin(string name, string pass);
 	virtual void menu() override;
 
-	void menegment_user();// управління користувачами
-	void add_user();//додати користувача
-	void delete_user();// відалити користувача
-	void user_modification();// изменить параметрі пользователя
+	void menegment_user();// СѓРїСЂР°РІР»С–РЅРЅСЏ РєРѕСЂРёСЃС‚СѓРІР°С‡Р°РјРё
+	void add_user();//РґРѕРґР°С‚Рё РєРѕСЂРёСЃС‚СѓРІР°С‡Р°
+	void delete_user();// РІС–РґР°Р»РёС‚Рё РєРѕСЂРёСЃС‚СѓРІР°С‡Р°
+	void user_modification();// РёР·РјРµРЅРёС‚СЊ РїР°СЂР°РјРµС‚СЂС– РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 
-	void statistic();//статистика
-	void statistic_categories();//по ктегории
-	void statistic_test();// по тесту
-	void statistic_user();//по пользователю
-	void statistic_output_fille();//загрузить статистику в файл
+	void statistic();//СЃС‚Р°С‚РёСЃС‚РёРєР°
+	void statistic_categories();//РїРѕ РєС‚РµРіРѕСЂРёРё
+	void statistic_test();// РїРѕ С‚РµСЃС‚Сѓ
+	void statistic_user();//РїРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ
+	void statistic_output_fille();//Р·Р°РіСЂСѓР·РёС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РІ С„Р°Р№Р»
 
-	void menegment_tests();// управление тестами
-	void add_test();// добавить тест
+	void menegment_tests();// СѓРїСЂР°РІР»РµРЅРёРµ С‚РµСЃС‚Р°РјРё
+	void add();
+	void del();
+	void add_test();// РґРѕР±Р°РІРёС‚СЊ С‚РµСЃС‚
 	void delete_test();
-	void add_category();//  категорию
+	void add_category();//  РєР°С‚РµРіРѕСЂРёСЋ
 	void delete_category();
-	void add_questions();//добавить вопросс
+	void add_questions();//РґРѕР±Р°РІРёС‚СЊ РІРѕРїСЂРѕСЃСЃ
 	void delete_questions();
-	void inport_txt();// импортировать из файла
-	void export_txt();// експортировать в файл
+	void inport_txt();// РёРјРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РёР· С„Р°Р№Р»Р°
+	void export_txt();// РµРєСЃРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РІ С„Р°Р№Р»
 };
 
 Admin::Admin() :User() {};
@@ -353,12 +390,12 @@ void Admin::menu()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль адміна : " << User::getName();
+		cout << "\n\n\n\n\n\n\t\t\t\tРџСЂРѕС„iР»СЊ Р°РґРјС–РЅР° : " << User::getName();
 		int choice = Menu::select_vertical(
-			{ "Управлiння користувачами",
-			  "Перегляд статистики",
-			  "Управління тестуваннями",
-			  "Вийти"					},
+			{ "РЈРїСЂР°РІР»iРЅРЅСЏ РєРѕСЂРёСЃС‚СѓРІР°С‡Р°РјРё",
+			  "РџРµСЂРµРіР»СЏРґ СЃС‚Р°С‚РёСЃС‚РёРєРё",
+			  "РЈРїСЂР°РІР»С–РЅРЅСЏ С‚РµСЃС‚СѓРІР°РЅРЅСЏРјРё",
+			  "Р’РёР№С‚Рё"					},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -374,12 +411,12 @@ void Admin::menegment_user()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tУправління користувачами ";
+		cout << "\n\n\n\n\n\n\t\t\t\tРЈРїСЂР°РІР»С–РЅРЅСЏ РєРѕСЂРёСЃС‚СѓРІР°С‡Р°РјРё ";
 		int choice = Menu::select_vertical(
-			{ "Додати користувача",
-			  "Видалити користувача",
-			  "Змінити інформацію користувача",
-			  "Вийти"							},
+			{ "Р”РѕРґР°С‚Рё РєРѕСЂРёСЃС‚СѓРІР°С‡Р°",
+			  "Р’РёРґР°Р»РёС‚Рё РєРѕСЂРёСЃС‚СѓРІР°С‡Р°",
+			  "Р—РјС–РЅРёС‚Рё С–РЅС„РѕСЂРјР°С†С–СЋ РєРѕСЂРёСЃС‚СѓРІР°С‡Р°",
+			  "Р’РёР№С‚Рё"							},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -394,12 +431,12 @@ void Admin::menegment_user()
 void statistic() {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tСтатистика ";
+		cout << "\n\n\n\n\n\n\t\t\t\tРЎС‚Р°С‚РёСЃС‚РёРєР° ";
 		int choice = Menu::select_vertical(
-			{ "За категоріями",
-			  "За тестом",
-			  "За студентом",
-			  "Вийти"			},
+			{ "Р—Р° РєР°С‚РµРіРѕСЂС–СЏРјРё",
+			  "Р—Р° С‚РµСЃС‚РѕРј",
+			  "Р—Р° СЃС‚СѓРґРµРЅС‚РѕРј",
+			  "Р’РёР№С‚Рё"			},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -415,91 +452,122 @@ void Admin::menegment_tests()
 {
 	do {
 		system("cls");
-		cout << "\n\n\n\n\n\n\t\t\t\tУпрпвління тестами ";
+		cout << "\n\n\n\n\n\n\t\t\t\tРЈРїСЂРїРІР»С–РЅРЅСЏ С‚РµСЃС‚Р°РјРё ";
 		int choice = Menu::select_vertical(
-			{ "Додати тест ",
-			  "Видалити тест ",
-			  "Додати категорію ",
-			  "Видалити категорію",
-			 "Додати запитання ",
-			 "Видалити запитання",
-			  "Вийти"				},
+			{ "Р”РѕРґР°С‚Рё",
+			 "Р’РёРґР°Р»РёС‚Рё",
+			  "Р’РёР№С‚Рё"				},
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
-		case 0: add_test();		break;
-		case 1: delete_test();			break;
-		case 2: add_category();		break;
-		case 3: /*delete_category();*/		break;
-		case 4: add_questions();		break;
-		case 5: //delete_questions();		break;
-		case 6: return;
+		case 0: add(); break;
+		case 1: del(); break;
+		case 2: return;
+		}
+	} while (true);
+}
+
+void Admin::add()
+{
+	do {
+		system("cls");
+		cout << "\n\n\n\n\n\n\t\t\t\tР”РѕРґР°РІР°РЅРЅСЏ ";
+		int choice = Menu::select_vertical(
+			{ "Р”РѕРґР°С‚Рё РєР°С‚РµРіРѕСЂС–СЋ ",
+			"Р”РѕРґР°С‚Рё С‚РµСЃС‚ ",  
+			 "Р”РѕРґР°С‚Рё Р·Р°РїРёС‚Р°РЅРЅСЏ ",
+			  "Р’РёР№С‚Рё" },
+			HorizontalAlignment::Center);
+		switch (choice)
+		{
+		case 0: add_category();		break;
+		case 1: add_test();			break;
+		case 2: add_questions();	break;
+		case 3: return;
+		}
+	} while (true);
+}
+
+void Admin::del()
+{
+	do {
+		system("cls");
+		cout << "\n\n\n\n\n\n\t\t\t\tР’РёРґР°Р»РµРЅРЅСЏ ";
+		int choice = Menu::select_vertical(
+			{ "Р’РёРґР°Р»РёС‚Рё РєР°С‚РµРіРѕСЂС–СЋ",
+			  "Р’РёРґР°Р»РёС‚Рё С‚РµСЃС‚ ",
+			 "Р’РёРґР°Р»РёС‚Рё Р·Р°РїРёС‚Р°РЅРЅСЏ",
+			  "Р’РёР№С‚Рё" },
+			HorizontalAlignment::Center);
+		switch (choice)
+		{
+		case 0: /*delete_category();*/		break;
+		case 1: delete_test();				break;
+		case 2: //delete_questions();		break;
+		case 3: return;
 		}
 	} while (true);
 }
 
 void Admin::add_test()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ РєР°С‚РµРіРѕСЂРёРё\n";
 	test->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РЅСѓР¶РЅРѕР№ РєР°С‚РµРіРѕСЂРёРё : \n";
 	string name_category, name_test, buff_str;
 	getline(cin, name_category);
-	if (test->exam(base_category, name_category) == 1)
+	if (test->exam_base(base_category, name_category) == 1)
 	{
 		system("cls");
-		cout << "~ Существующие тесты \n";
-		//test->files(base_tests);
-		/*while (getline(f, buff_str))
-		{
-			if (buff_str == name_category)
+		cout << "~ РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ С‚РµСЃС‚С‹ \n";
+		ifstream f(base_tests);
+		if (f.is_open()) {
+			while (getline(f, buff_str))
 			{
-				cout << "-" << buff_str << "\n";
+				if (test->exam_category(name_category, buff_str) == true)
+				{
+					buff_str = regex_replace(buff_str, regex(name_category + "_"), "");
+					cout << " - " << buff_str << "\n";
+				}
 			}
-		}*/
-		cout << "Введите название теста\n";
+		}
+		cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°\n";
 		getline(cin, name_test);
 		name_test = name_category + "_" + name_test;
-		if (test->exam(base_tests, name_test) == 0)
-		{
-			test->add(name_test, test->get_name_answer(name_test));
-		}
+		if (test->exam_base(base_tests, name_test) == 0)
+		{	test->add(name_test, test->get_name_answer(name_test));	}
 		else
 		{
-			cout << "Тест с таким именем уже существует. Хотите добавить вопрос?1 - да , 0 - нет\n";
+			cout << "РўРµСЃС‚ СЃ С‚Р°РєРёРј РёРјРµРЅРµРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚. РҐРѕС‚РёС‚Рµ РґРѕР±Р°РІРёС‚СЊ РІРѕРїСЂРѕСЃ?1 - РґР° , 0 - РЅРµС‚\n";
 			bool a; cin >> a; cin.ignore();
 			if (a == true)
-			{
-				//добавление вопроса
-			}
+			{	add_questions();	}
 			else return;
 		}
 	}
 	else
 	{
-		cout << "Твкой категории нет. Создать новую? ?1 - да , 0 - нет\n";
+		cout << "РўРІРєРѕР№ РєР°С‚РµРіРѕСЂРёРё РЅРµС‚. РЎРѕР·РґР°С‚СЊ РЅРѕРІСѓСЋ? ?1 - РґР° , 0 - РЅРµС‚\n";
 		bool a; cin >> a; cin.ignore();
 		if (a == true)
-		{
-			//добавление категории
-		}
+		{	add_category();}
 		else return;
 	}
 }
 
 void Admin::delete_test()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ РєР°С‚РµРіРѕСЂРёРё\n";
 	test->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РЅСѓР¶РЅРѕР№ РєР°С‚РµРіРѕСЂРёРё : \n";
 	string name_category, name_test, buff_str;
+	string temp = "temp.txt";
 	getline(cin, name_category);
-	if (test->exam(base_category, name_category) == 1)
+	if (test->exam_base(base_category, name_category) == 1)
 	{
-		cout << "~ Существующие тесты \n";
-		//test->files("name_test");
-		cout << "Введите название теста\n";
-		string temp = "temp.txt";
+		cout << "~ РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ С‚РµСЃС‚С‹ \n";
+		test->file_category_tests(name_category);
+		cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°\n";
 		getline(cin, name_test);
 		name_test = name_category + "_" + name_test;
 		ifstream f(base_tests);
@@ -509,9 +577,7 @@ void Admin::delete_test()
 			while (getline(f, buff_str))
 			{
 				if (name_test != buff_str)
-				{
-					out << buff_str << "\n";
-				}
+				{	out << buff_str << "\n";	}
 				else
 				{
 					name_test += ".txt";
@@ -519,58 +585,61 @@ void Admin::delete_test()
 					name_test = regex_replace(name_test, regex(".txt"), "");
 					name_test += "_answer.txt";
 					remove(name_test.c_str());
-					cout << "Тест был удалён\n";
+					cout << "РўРµСЃС‚ Р±С‹Р» СѓРґР°Р»С‘РЅ\n";
 					system("pause");
 				}
 			}
-		}
-		f.close(); out.close();
-		ifstream ft(temp);
-		ofstream out2("name_tests.txt");
-		if (ft.is_open() && out2.is_open())
-		{
-			while (getline(ft, buff_str))
+			f.close(); out.close();
+			ifstream ft(temp);
+			ofstream out2(base_tests);
+			if (ft.is_open() && out2.is_open())
 			{
-				out2 << buff_str << "\n";
+				while (getline(ft, buff_str))
+				{	out2 << buff_str << "\n";	}
 			}
-		}
-		remove(temp.c_str());
+			remove(temp.c_str());
 
-		ft.close(); out2.close();
+			ft.close(); out2.close();
+		}
+		else 
+		{ 
+			cout << "eror file\n"; 
+			system("pause"); 
+		}
+		
 	}
 }
 
 void Admin::add_category()
 {
-	cout << "~ Уже имеющиеся категории ~\n";
-	test->files(base_category);//тут выводим все имеющиеся категории
-	cout << "Введите название категории что ходите добавить\n";
+	cout << "~ РЈР¶Рµ РёРјРµСЋС‰РёРµСЃСЏ РєР°С‚РµРіРѕСЂРёРё ~\n";
+	test->files(base_category);//С‚СѓС‚ РІС‹РІРѕРґРёРј РІСЃРµ РёРјРµСЋС‰РёРµСЃСЏ РєР°С‚РµРіРѕСЂРёРё
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё С‡С‚Рѕ С…РѕРґРёС‚Рµ РґРѕР±Р°РІРёС‚СЊ\n";
 	string name_category, buff_str;
 	getline(cin, name_category);
-	ifstream f(base_category);//открываем поток для проверки
+	ifstream f(base_category);//РѕС‚РєСЂС‹РІР°РµРј РїРѕС‚РѕРє РґР»СЏ РїСЂРѕРІРµСЂРєРё
 	if (f.is_open())
-	{
-		
-		if (test->exam(base_category, name_category) == 1) 
+	{	
+		if (test->exam_base(base_category, name_category) == 1)
 		{
-			cout << "Такая категория уже существует\n";
+			cout << "РўР°РєР°СЏ РєР°С‚РµРіРѕСЂРёСЏ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚\n";
 			system("pause");
 			return;
 		}
 		f.close();
 		ofstream out(base_category, ios::app);
 		if (out.is_open())
-		{	out << name_category << "\n";	}//записываем если нет совпадений
+		{	out << name_category << "\n";	}//Р·Р°РїРёСЃС‹РІР°РµРј РµСЃР»Рё РЅРµС‚ СЃРѕРІРїР°РґРµРЅРёР№
 		else 
 		{
-			cout << "Ошибка открытия файла для чтения\n";
+			cout << "РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ С„Р°Р№Р»Р° РґР»СЏ С‡С‚РµРЅРёСЏ\n";
 			system("pause");
 		}
 		out.close();
 	}
 	else
 	{
-		cout << "Ошибка открытия файла для записи\n";
+		cout << "РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ С„Р°Р№Р»Р° РґР»СЏ Р·Р°РїРёСЃРё\n";
 		system("pause");
 	}
 }
@@ -578,7 +647,7 @@ void Admin::add_category()
 void Admin::add_questions()
 {
 	test->files("name_questions");
-	cout << "Введите название теста\n";
+	cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°\n";
 	string name_test, str;
 	getline(cin, name_test);
 	ifstream f("name_tests.txt");
@@ -590,9 +659,7 @@ void Admin::add_questions()
 			{
 				f.close();
 				test->add(name_test, test->get_name_answer(name_test));
-
 			}
-			
 		}
 	}
 	f.close();	
@@ -602,9 +669,10 @@ void Admin::add_questions()
 class Testing_system
 {
 	BTree<string, list<User*>> user;
-	string file_user = "users_info.txt";
+	string file_user = "base_users.txt";
 	void login();
 	void Registration();
+	bool exam_admin();
 public:
 	Testing_system();
 	~Testing_system();
@@ -612,19 +680,17 @@ public:
 };
 
 Testing_system::Testing_system() {}
-Testing_system::~Testing_system() {  }
-
-
+Testing_system::~Testing_system() { }
 
 void Testing_system::menu()
 {
 	do {
 		system("cls");
 		int choice = Menu::select_vertical(
-			{ "Увiйти",
-			"Зареєструватися",
-			"Настройки",
-			"Вийти" },
+			{ "РЈРІiР№С‚Рё",
+			"Р—Р°СЂРµС”СЃС‚СЂСѓРІР°С‚РёСЃСЏ",
+			"РќР°СЃС‚СЂРѕР№РєРё",
+			"Р’РёР№С‚Рё" },
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -643,20 +709,14 @@ void Testing_system::Registration()
 	if (out.is_open())
 	{
 		cout << "Name :"; getline(cin, new_name);
-		out << new_name << "\n";
 		list<User*>* new_list = user.getValue(new_name);
 		if (!new_list) {
 			cout << "Password :"; getline(cin, new_pass);
-			out << new_pass << "\n";
-			if (user.isEmpty() == 1) {
-				User* admin = new Admin(new_name, new_pass);
-				list<User*> newList;
-				newList.push_back(admin);
-				user.push_r(admin->getName(), newList);
-				admin->menu();
-			}
-			else {
+			if (exam_admin() == true) 
+			{
 				string new_FIO, new_number, new_address;
+				out << new_name << "\n";
+				out << new_pass << "\n";
 				cout << "FIO :"; getline(cin, new_FIO);
 				cout << "Mobile number :"; getline(cin, new_number);
 				cout << "Home address :"; getline(cin, new_address);
@@ -666,10 +726,35 @@ void Testing_system::Registration()
 				user.push_r(student->getName(), newList);
 				student->menu();
 			}
+			else 
+			{
+				out << "Admin_" + new_name << "\n";
+				out << new_pass << "\n";
+				User* admin = new Admin(new_name, new_pass);
+				list<User*> newList;
+				newList.push_back(admin);
+				user.push_r(admin->getName(), newList);
+				admin->menu();
+			}
 		}
-		else { cout << "Це ім'я зайняте "; system("pause"); }
+		else { cout << "Р¦Рµ С–Рј'СЏ Р·Р°Р№РЅСЏС‚Рµ "; system("pause"); }
 	}
 	else { cout << "eror"; system("pause"); return; }
+}
+
+bool Testing_system::exam_admin()
+{
+	string str;
+	ifstream f(file_user);
+	if (f.is_open())
+	{
+		while (getline(f, str))
+		{
+			str.resize(6);
+			if ("Admin_" == str)	{	return true;	}
+		}
+	}
+	return false;
 }
 
 void Testing_system::login()
@@ -682,47 +767,32 @@ void Testing_system::login()
 	{
 		while (getline(f, file_name))
 		{
-			if (this_name == file_name)
+			if ("Admin_" + this_name == file_name)
 			{
 				cout << "Password - ";
 				getline(cin, pass);
 				getline(f, file_pass);
 				if (pass == file_pass)
 				{
-
-
-					//cout << "тут происходит вход в систему от определённого человека";
+					User* user = new Admin(this_name, pass);
+					user->menu();
 					return;
 					system("pause");
 				}
-				else { cout << "eror pass"; system("pause"); return; }
 			}
-			else  
+			else if (this_name == file_name)
 			{
-				cout << "Профіль не знайдено \n";
-				system("pause");
-				system("cls");
-				return;
+				cout << "Password - ";
+				getline(cin, pass);
+				getline(f, file_pass);
+				if (pass == file_pass)
+				{
+					User* user = new Student(this_name, pass);
+					user->menu();
+					return;
+					system("pause");
+				}
 			}
-		}
-		
+		}		
 	}
-
-	//for(User* u : user)
-	//{
-	//	if (user == new_name)
-	//	{
-
-	//	}
-	//}
-	/*for (size_t i = 0; i < user.size(); i++)
-	{
-		if (new_name == user.rend()) {}
-	}*/
-	/*	string pass;
-		getline(cin, pass);
-		if(pass == user.getPassword())*/
-		
 }
-
-
