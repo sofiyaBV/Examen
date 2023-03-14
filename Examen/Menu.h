@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <windows.h>
 #include <vector>
 #include <iostream>
@@ -96,6 +96,7 @@ void settingConsole() {
 
 	system("cls");
 	int choice = Menu::select_vertical(
+
 		{ "Чёрный",
 		"Синий",
 		"Зелёный",
@@ -104,6 +105,7 @@ void settingConsole() {
 		"Лиловый",
 		"Жёлтый",
 		"Серыё" },
+
 		HorizontalAlignment::Center);
 	switch (choice)
 	{

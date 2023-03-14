@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <iostream> 
 #include"Menu.h"
 #include<list>
@@ -109,6 +110,7 @@ void test::go_test(string name_test, string my_answer)
 		while (getline(f, str))
 		{
 			system("cls");
+
 			cout << "Тест\n";
 			cout << "Задание номер " << count << "\n";
 			cout << str << "\n";
@@ -143,8 +145,10 @@ void test::result(string name_user, string name_file_answer, string my_answer)
 			else { n++; }
 		}
 		f1.close(); f2.close();
+
 		cout << p << " - правильных\n";
 		cout << n << " - неправильных\n";
+
 		system("pause");
 		out << "По этому тесту у вас " << p << " из " << p + n << "\n";
 		f1.close(); out.close(); f2.close();
@@ -243,9 +247,11 @@ public:
 	string getNumber() const		{ return number;			}
 	string getAddress()  const		{ return address;			}
 	string get_FIO() const			{ return FIO;				}
+
 	void viewing_previons_tests();//посмотреть предыдущие тесты и их результаты
 	void take_a_test();//пройти тест
 	void contine_test();//продолжить тест
+
 	void profil();
 };
 
@@ -262,6 +268,7 @@ void Student::menu()
 {
 	do {
 		system("cls");
+
 		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль студента : " << User::getName();
 		int choice = Menu::select_vertical(
 			{ "Перегляд попереднiх результатiв",
@@ -269,6 +276,7 @@ void Student::menu()
 			  "Продовжити тест",
 			  "Переглянути профіль",
 			  "Вийти"							},
+
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -317,6 +325,7 @@ void Student::viewing_previons_tests()
 
 void Student::take_a_test()
 {
+
 	cout << "~ Существующие категории\n";
 	test->files(base_category);
 	cout << "Введите название нужной категории : \n";
@@ -348,6 +357,7 @@ void Student::take_a_test()
 	getline(cin, name_test);
 	this->test->go_test(name_test + ".txt", "my_" + test->get_name_answer(name_test));
 	this->test->result(this->getName(), test->get_name_answer(name_test), "my_" + test->get_name_answer(name_test));*/
+
 }
 
 class Admin : public User
@@ -357,6 +367,7 @@ public:
 	Admin();
 	Admin(string name, string pass);
 	virtual void menu() override;
+
 
 	void menegment_user();// управління користувачами
 	void add_user();//додати користувача
@@ -380,6 +391,7 @@ public:
 	void delete_questions();
 	void inport_txt();// импортировать из файла
 	void export_txt();// експортировать в файл
+
 };
 
 Admin::Admin() :User() {};
@@ -390,12 +402,14 @@ void Admin::menu()
 {
 	do {
 		system("cls");
+
 		cout << "\n\n\n\n\n\n\t\t\t\tПрофiль адміна : " << User::getName();
 		int choice = Menu::select_vertical(
 			{ "Управлiння користувачами",
 			  "Перегляд статистики",
 			  "Управління тестуваннями",
 			  "Вийти"					},
+
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -411,12 +425,14 @@ void Admin::menegment_user()
 {
 	do {
 		system("cls");
+
 		cout << "\n\n\n\n\n\n\t\t\t\tУправління користувачами ";
 		int choice = Menu::select_vertical(
 			{ "Додати користувача",
 			  "Видалити користувача",
 			  "Змінити інформацію користувача",
 			  "Вийти"							},
+
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -431,12 +447,14 @@ void Admin::menegment_user()
 void statistic() {
 	do {
 		system("cls");
+
 		cout << "\n\n\n\n\n\n\t\t\t\tСтатистика ";
 		int choice = Menu::select_vertical(
 			{ "За категоріями",
 			  "За тестом",
 			  "За студентом",
 			  "Вийти"			},
+
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -452,11 +470,13 @@ void Admin::menegment_tests()
 {
 	do {
 		system("cls");
+
 		cout << "\n\n\n\n\n\n\t\t\t\tУпрпвління тестами ";
 		int choice = Menu::select_vertical(
 			{ "Додати",
 			 "Видалити",
 			  "Вийти"				},
+
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -511,6 +531,7 @@ void Admin::del()
 
 void Admin::add_test()
 {
+
 	cout << "~ Существующие категории\n";
 	test->files(base_category);
 	cout << "Введите название нужной категории : \n";
@@ -663,6 +684,7 @@ void Admin::add_questions()
 		}
 	}
 	f.close();	
+
 }
 
 
@@ -687,10 +709,12 @@ void Testing_system::menu()
 	do {
 		system("cls");
 		int choice = Menu::select_vertical(
+
 			{ "Увiйти",
 			"Зареєструватися",
 			"Настройки",
 			"Вийти" },
+
 			HorizontalAlignment::Center);
 		switch (choice)
 		{
@@ -754,16 +778,20 @@ bool Testing_system::exam_admin()
 			if ("Admin_" == str)	{	return true;	}
 		}
 	}
+
 	return false;
+
 }
 
 void Testing_system::login()
 {
+
 	string this_name, file_name, pass, file_pass;
 	ifstream f(file_user);
 	cout << "Name - ";
 	getline(cin, this_name);
 	if (f.is_open()) 
+
 	{
 		while (getline(f, file_name))
 		{
