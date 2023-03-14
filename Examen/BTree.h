@@ -55,6 +55,7 @@ public:
 	bool push(const TKey& key, const TVal& value);
 	BTreeNode<TKey, TVal>* push_r(TKey key, TVal val, BTreeNode<TKey, TVal>*& node = root);
 	void printDiapason(const TKey& key1, const TKey& key2);
+	//BTreeNode<TKey, TVal>* find(const TKey& key);
 };
 
 template<class TKey, class TVal>
@@ -141,6 +142,23 @@ void BTree<TKey, TVal>::printDiapason(const TKey& key1, const TKey& key2)
 	if (root)
 		root->printDiapason(key1, key2);
 }
+
+//template<class TKey, class TVal>
+//BTreeNode<TKey, TVal>* BTree<TKey, TVal>::find(const TKey& key) {
+//	BTreeNode<TKey, TVal>* current = root;
+//	while (current != nullptr) {
+//		if (key == current->key) {
+//			return current;
+//		}
+//		else if (key < current->key) {
+//			current = current->left;
+//		}
+//		else {
+//			current = current->right;
+//		}
+//	}
+//	return nullptr;
+//}
 
 template<class TKey, class TVal>
 BTreeNode<TKey, TVal>* BTree<TKey, TVal>::root = nullptr;

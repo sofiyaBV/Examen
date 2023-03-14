@@ -147,6 +147,5 @@ void settingConsole() {
 	case 8: system("color 87"); break;
 	default:
 		break;
-
 	}
 }
