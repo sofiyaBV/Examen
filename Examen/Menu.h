@@ -10,35 +10,6 @@
 
 using namespace std;
 
-//void settingConsole() {
-//	cout << "Виберіть цвіт консолі" << endl;
-//	cout << "0 — черный\
-//		1 — синий\
-//		2 — зеленый\
-//		3 — голубой\
-//		4 — красный\
-//		 5 — лиловый\
-//		6 — желтый\
-//		7 — белый\
-//		8 — серый" << endl;
-//	int choice; cin >> choice;
-//	switch (choice)
-//	{
-//	case 0: system("color 07"); break;
-//	case 1: system("color 17"); break;
-//	case 2: system("color 27"); break;
-//	case 3: system("color 37"); break;
-//	case 4: system("color 47"); break;
-//	case 5: system("color 57"); break;
-//	case 6: system("color 67"); break;
-//	case 7: system("color 70"); break;
-//	case 8: system("color 87"); break;
-//	default:
-//		break;
-//	}
-//}
-
-
 class Menu
 {
 public:
@@ -125,14 +96,14 @@ void settingConsole() {
 
 	system("cls");
 	int choice = Menu::select_vertical(
-		{ "Чёрный",
-		"Синий",
-		"Зелёный",
-		"Голубой",
-		"Красный",
-		"Лиловый",
-		"Жёлтый",
-		"Серыё" },
+		{ "Г—ВёГ°Г­Г»Г©",
+		"Г‘ГЁГ­ГЁГ©",
+		"Г‡ГҐГ«ВёГ­Г»Г©",
+		"ГѓГ®Г«ГіГЎГ®Г©",
+		"ГЉГ°Г Г±Г­Г»Г©",
+		"Г‹ГЁГ«Г®ГўГ»Г©",
+		"Г†ВёГ«ГІГ»Г©",
+		"Г‘ГҐГ°Г»Вё" },
 		HorizontalAlignment::Center);
 	switch (choice)
 	{
