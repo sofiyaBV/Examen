@@ -1,8 +1,0 @@
-wwww_task1
-wwww_test1
-qqqq_test2
-ssss_test2
-ssss_test1
-qqqq_test2
-wwww_test1
-wwww_task1
