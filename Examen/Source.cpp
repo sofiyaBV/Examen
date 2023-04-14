@@ -1,7 +1,6 @@
 #include "Test.h"
 #include <Windows.h> 
 #include<locale>
-using namespace std;
 
 void main()
 {

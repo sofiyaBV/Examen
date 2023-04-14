@@ -8,8 +8,6 @@
 
 #include "Function.h"
 
-using namespace std;
-
 class Menu
 {
 public:
@@ -44,18 +42,18 @@ public:
 				{
 					SetColor(textColor, backColor);
 					gotoxy(x, y + i);
-					cout << setw(maxLen) << left;
+					std::cout << setw(maxLen) << left;
 					gotoxy(x, y + i);
-					cout << menu[i] << endl;
+					std::cout << menu[i] << endl;
 					SetColor(backColor, textColor);
 				}
 				else
 				{
 					SetColor(backColor, textColor);
 					gotoxy(x, y + i);
-					cout << setw(maxLen) << left;
+					std::cout << setw(maxLen) << left;
 					gotoxy(x, y + i);
-					cout << menu[i] << endl;
+					std::cout << menu[i] << endl;
 					SetColor(textColor, backColor);
 				}
 			}
@@ -72,20 +70,20 @@ public:
 		{
 			SetColor(backColor, textColor);
 			gotoxy(x, y + pos);
-			cout << setw(maxLen) << left;
+			std::cout << setw(maxLen) << left;
 			gotoxy(x, y + pos);
-			cout << menu[pos] << endl;
+			std::cout << menu[pos] << endl;
 			Sleep(200);
 			SetColor(textColor, backColor);
 			gotoxy(x, y + pos);
-			cout << setw(maxLen) << left;
+			std::cout << setw(maxLen) << left;
 			gotoxy(x, y + pos);
-			cout << menu[pos] << endl;
+			std::cout << menu[pos] << endl;
 			SetColor(backColor, textColor);
 			Sleep(200);
 		}
 		SetColor(backColor, textColor);
-		system("cls");
+		std::system("cls");
 		return pos;
 	}
 
@@ -94,7 +92,7 @@ public:
 
 void settingConsole() {
 
-	system("cls");
+	std::system("cls");
 	int choice = Menu::select_vertical(
 		{ "Чёрный",
 		"Синий",
@@ -107,15 +105,15 @@ void settingConsole() {
 		HorizontalAlignment::Center);
 	switch (choice)
 	{
-	case 0: system("color 07"); break;
-	case 1: system("color 17"); break;
-	case 2: system("color 27"); break;
-	case 3: system("color 37"); break;
-	case 4: system("color 47"); break;
-	case 5: system("color 57"); break;
-	case 6: system("color 67"); break;
-	case 7: system("color 70"); break;
-	case 8: system("color 87"); break;
+	case 0: std::system("color 07"); break;
+	case 1: std::system("color 17"); break;
+	case 2: std::system("color 27"); break;
+	case 3: std::system("color 37"); break;
+	case 4: std::system("color 47"); break;
+	case 5: std::system("color 57"); break;
+	case 6: std::system("color 67"); break;
+	case 7: std::system("color 70"); break;
+	case 8: std::system("color 87"); break;
 	default:
 		break;
 	}
