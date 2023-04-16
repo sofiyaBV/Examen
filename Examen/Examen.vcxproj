@@ -142,7 +142,6 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BTree.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Test.h" />

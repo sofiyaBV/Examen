@@ -1,4 +1,0 @@
-num1
-votv1
-num4
-votv4

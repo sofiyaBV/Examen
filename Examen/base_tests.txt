@@ -1,6 +1,3 @@
-qqq_test 1
-qqq_twst1
-qqq_1
-
-Математика_Додавання
-Математика_Віднімання
+category 1_test 1
+category 2_test_1
+category 1_test 2

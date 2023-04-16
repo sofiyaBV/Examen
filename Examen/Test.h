@@ -2,7 +2,7 @@
 #include <iostream> 
 #include"Menu.h"
 #include<list>
-#include"BTree.h"
+#include<map>
 #include <iostream>
 #include <fstream>
 #include <string.h>
@@ -13,7 +13,7 @@ using namespace std;
 
 string encryptDecrypt(string toEncrypt) 
 {
-	char key[3] = { 'K', 'C', 'Q' };
+	char key[3] = { 'A', 'r', 'N' };
 	string output = toEncrypt;
 	for (int i = 0; i < toEncrypt.size(); i++)
 	{	output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))];	}
@@ -38,6 +38,7 @@ struct exam_file
 	bool exam_category(string category, string str) const;
 	bool exam_admin	  ()							const;
 	bool exam_user    (string name)					const;
+	bool exam_str	  (string str)					const;
 };
 
 bool exam_file::exam_base(string base, string str) const
@@ -93,6 +94,11 @@ bool exam_file::exam_user(string name) const
 	return false;
 }
 
+bool exam_file::exam_str(string str) const
+{
+	if (str.empty() == true || str == " ") { return true; }
+	else								   { return false; }
+}
 
 class test 
 {
@@ -112,39 +118,43 @@ void test::add(string name_test, string name_file_answer)
 	ofstream out_test(name_test + ".txt", ios::app);
 	ofstream out_answer(name_file_answer + ".txt", ios::app);
 	ofstream out_base("base_tests.txt", ios::app);
+	size_t count = 1;
 	if (out_test.is_open() && out_answer.is_open() && out_base.is_open())
 	{
-		char a;
+		size_t a;
 		do {
 			string st;
-			cout << "Задание\n"; getline(cin, st); out_test << st << "\n";
-			cout << "Варианты ответов \n"; getline(cin, st); out_test << st << "\n";
-			cout << "Правильный ответ \n"; getline(cin, st); out_answer << st << "\n";
-			cout << "дабвить еще?(0 - нет, 1 - да)\n"; cin >> a; cin.ignore();
-			if (a == '0')
+			cout << "Завдання № " << count << "\n";getline(cin, st);
+			while (exam.exam_str(st))
+			{	cout << "Завдання не може бути пустим, введіть повторно :\n"; getline(cin, st);	}
+			out_test << st << "\n";
+			cout << "Варінти відповідей \n";  getline(cin, st); out_test   << st << "\n";
+			cout << "Правильна відповідь \n"; getline(cin, st); out_answer << st << "\n";
+			cout << "Додадти ще запитання?(0 - ні, будь яке додатнэ число - так)\n";
+			cin >> a; 
+			while (cin.fail())
+			{
+				cin.clear();
+				cin.ignore(32767, '\n');
+				cout << "Додадти ще запитання?(0 - ні, будь яке додатнэ число - так)\n";
+				cin >> a;
+			}
+			cin.ignore();
+			count++;
+			if (a == 0)
 			{
 				if (exam.exam_base("base_tests.txt", name_test) == false)
 				{ 
 					out_base << name_test << "\n"; 
-					cout << "Тест успешно добавлен\n";
+					cout << "Тест завантажено у базу\n";
 					system("pause");
 				}
-				out_test.close(); out_answer.close(); out_base.close();
-				return;
-			}
-			else if (a != '1')
-			{
-				out_test.close(); out_answer.close(); out_base.close();
-				cout << "Был выбран некоректный вариент,файл закрыт на последнем вопроссе\n";
-				system("pause");
-				a = false;
-				return;
-			}
-			system("cls");
+				out_test.close(); out_answer.close(); out_base.close();	return;
+			}system("cls");
 		} while (true);
 	}
 	else
-	{	cout << "Оштбка при открытии файлов для записа\n";	system("pause");	}
+	{	cout << "Файл для запису не був відкритий\n";	system("pause");	}
 }
 
 void test::go_test(string name_test, string my_answer) const
@@ -158,26 +168,25 @@ void test::go_test(string name_test, string my_answer) const
 		while (getline(f, str))
 		{
 			system("cls");
-			cout << "Тест\n";
-			cout << "Задание номер " << count << "\n";
-			cout << str << "\nВарианты ответов";
-			getline(f, str);
+			cout << "Тест - \n";
+			cout << "Завдання №" << count << "\n";
+			cout << str << "\nВаріанти відповідей "; getline(f, str);
 			cout << str << "\n";
-			cout << "Ответ - "; cin >> otv;
+			cout << "Ваша відповідь - "; cin >> otv;
 			count++;
 			out << otv << "\n";
-		}
-		f.close(); out.close();
+		}f.close(); out.close();
 	}
 	else 
 	{ 
-		cout << "Ошибка открытия файла(\n"; system("pause"); 
+		cout << "Файл не був відкритий\n"; system("pause"); 
 		f.close(); out.close(); return; 
 	}
 }
 
 void test::result(string name, string name_file_answer, string my_answer) const
 {
+	system("cls");
 	int p = 0, n = 0;
 	string str, otv;
 	ifstream f1(name_file_answer);
@@ -188,22 +197,31 @@ void test::result(string name, string name_file_answer, string my_answer) const
 		while (getline(f1, str) && getline(f2, otv))
 		{
 			if (str == otv) { p++; }
-			else { n++; }
+			else			{ n++; }
 		}
 		f1.close(); f2.close();
 		double answer = 12 / (p + n);
 		answer = answer * p;
-		cout << p << " - правильных\n";
-		cout << n << " - неправильных\n";
-		cout << answer << " - балов из 12 \n";
+		cout << p << " - правельних відповідей\n";
+		cout << n << " - неправильних відповідей\n";
+		if (p == p + n)
+		{
+			cout << "12 - балів з 12 \n";
+			out << "З цього тесту у вас 12 з 12 \n";
+		}
+		else
+		{
+			cout << answer << " - балов из 12 \n";
+			out << "З цього тесту у вас " << answer << " з 12 \n";
+		}
 		system("pause");
-		out << "По этому тесту у вас " << answer << " из 12 \n";
 		f1.close(); out.close(); f2.close();
+		remove(my_answer.c_str());
 		return;
 	}
 	else 
 	{ 
-		cout << "Ошибка открытия файла("; 
+		cout << "Файл не був відкритий"; 
 		system("pause"); 
 		f1.close(); out.close(); f2.close();
 		return; 
@@ -221,8 +239,7 @@ void test::files(string file_name) const
 	{
 		while (getline(f, st)) 
 		{	cout << " - " << st << "\n"; }
-	}
-	f.close();
+	}f.close();
 }
 
 void test::file_category_tests(string category) const
@@ -246,10 +263,10 @@ class User
 	string name;
 	string password;
 protected:
-	string base_tests = "base_tests.txt";
-	string base_users = "base_users.txt";
+	string base_tests	 = "base_tests.txt";
+	string base_users	 = "base_users.txt";
 	string base_category = "base_category.txt";
-	string temp = "temp.txt";
+	string temp          = "temp.txt";
 public:
 	User();
 	User(string name, string pass);
@@ -261,22 +278,19 @@ public:
 	void   setPassword(string pass);
 };	
 
-User::User(): name("no name"), password("no pass") {};
+User::User(): name("no name"), password("no pass"){};
 User::User(string name, string pass) : name(name) { setPassword(pass); };
 User::~User(){}
-void   User::setName(string name)		{	this->name = name;	}
-string User::getName()     const		{	return name;		}
-void   User::setPassword(string pass)	
-{
-	password = encryptDecrypt(pass);
-}
-string User::getPassword() const		{ return encryptDecrypt(password); }
+void   User::setName	(string name)	{	this->name = name;					}
+string User::getName	() const		{	return name;						}
+void   User::setPassword(string pass)	{	password = encryptDecrypt(pass);	}
+string User::getPassword() const		{   return encryptDecrypt(password);	}
 
 
 class Student : public User
 {
 	exam_file* exam = nullptr;
-	test* test = nullptr;
+	test* test		= nullptr;
 	string number;
 	string address;
 	string FIO;
@@ -335,11 +349,11 @@ void Student::info()
 
 void Student::profil()
 {
-	cout << "Name - "		<< this->getName();
-	cout << "\nFIO - "		<< this->get_FIO();
-	cout << "\nNumber - "	<< this->getNumber();
-	cout << "\nAddress - "	<< this->getAddress();
-	cout << "\nPassword - " << this->getPassword();
+	cout << "Логін - "			 << this->getName();
+	cout << "\nПІБ - "			 << this->get_FIO();
+	cout << "\nНомер телефону - "<< this->getNumber();
+	cout << "\nАдресса - "		 << this->getAddress();
+	cout << "\nПароль - "		 << this->getPassword();
 	cout << "\n";
 	system("pause");
 }
@@ -361,7 +375,6 @@ void Student::menu()
 		int choice = Menu::select_vertical(
 			{ "Перегляд попереднiх результатiв",
 			  "Пройти тест",
-			  "Продовжити тест",
 			  "Переглянути профіль",
 			  "Вийти"							},
 			HorizontalAlignment::Center);
@@ -369,9 +382,8 @@ void Student::menu()
 		{
 		case 0: viewing_previons_tests();			break;
 		case 1: take_a_test();					    break;
-		case 2: /*contine_test();*/					break;
-		case 3: profil();							break;
-		case 4: return;
+		case 2: profil();							break;
+		case 3: return;
 		}
 	} while (true);
 }
@@ -384,22 +396,25 @@ void Student::viewing_previons_tests() const
 	{
 		while (getline(f, st)){	cout << st << "\n";	}
 	}
-	else{	cout << "По вашим прохождениям нет данных\n";	}
+	else{	cout << "По вашим проходженням немає данних\n";	}
 	f.close();
 	system("pause");
 }
 
 void Student::take_a_test()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ Існуючі категорії \n";
 	test->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Введіть назву потрібної категорії : \n";
 	string name_category, name_test, buff_str;
 	getline(cin, name_category);
+	while (exam->exam_str(name_category))
+	{ cout << "Ви нічого не написали\n";	getline(cin, name_category);}
+	system("cls");
 	if (exam->exam_base(base_category, name_category) == true)
 	{
 		system("cls");
-		cout << "~ Существующие тесты \n";
+		cout << "~ Існуючі тести тесты \n";
 		ifstream f(base_tests);
 		if (f.is_open()) {
 			while (getline(f, buff_str))
@@ -411,16 +426,17 @@ void Student::take_a_test()
 				}
 			}
 		}
-		cout << "Введите название теста\n";
+		cout << "Введіть назву теста :\n";
 		getline(cin, name_test);
+		while (exam->exam_str(name_test))
+		{ cout << "Ви нічого не написали\n";	getline(cin, name_test);}
 		name_test = name_category + "_" + name_test;
 		if (exam->exam_base(base_tests, name_test) == true)
 		{
 			string answer = this->getName() + "_" + test->get_name_answer(name_test) + ".txt";
 			add(name_category, regex_replace(name_test, regex(name_category + "_"), ""));
 			test->go_test(name_test + ".txt", answer);
-			test->result(this->getName(),test->get_name_answer(name_test ) + ".txt", answer);
-			
+			test->result(this->getName(), test->get_name_answer(name_test) + ".txt", answer);
 		}
 	}
 }
@@ -429,15 +445,14 @@ void Student::add(string category, string test)
 {
 	ofstream out(this->getName() + "_result.txt", ios::app);
 	if (out.is_open())
-	{	out << "Категория : " << category << " тест - " << test << "\n";	}
+	{	out << "Категорія : " << category << " тест - " << test << "\n";	}
 }
 
 class Admin : public User
 {
-	BTree<string, list<User*>> user;
 	string FIO;
-	exam_file exam;
-	test* tests = nullptr;
+	exam_file* exam = nullptr;
+	test* tests		= nullptr;
 public:
 	Admin();
 	Admin(string name, string pass);
@@ -451,11 +466,10 @@ public:
 	void delete_user      ();
 	void user_modification();
 
-	void statistic			   ()				 const;//статистика
-	void statistic_categories  (string category) const;//по ктегории
-	void statistic_test		   (string name_test)const;// по тесту
-	void statistic_user		   (string user)	 const;//по пользователю
-	void statistic_output_fille(string name_file)const;//загрузить статистику в файл
+	void statistic			  ()									  const;
+	void statistic_categories (string category)					      const;
+	void statistic_test		  (string name_category ,string name_test)const;
+	void statistic_user		  (string user)							  const;
 
 	void menegment_tests ();
 	void add			 ();
@@ -466,7 +480,6 @@ public:
 	void delete_category ();
 	void add_questions   ();
 	void delete_questions();
-	void import_txt		 (string name_file)const;
 	void export_txt		 (string name_file_test, string name_file_user)const; 
 };
 
@@ -497,7 +510,7 @@ Admin::Admin(string name, string pass, string FIO)
 }
 
 void Admin::setFIO(string name) { FIO = name; }
-string Admin::get_FIO() { return FIO; }
+string Admin::get_FIO()			{ return FIO; }
 
 void Admin::menu()
 {
@@ -519,27 +532,31 @@ void Admin::menu()
 		case 2: menegment_tests();		break;
 		case 3: 	
 			tests->files(base_category);
-			cout << "Названиие категории :\n";
+			cout << "Назва потрібної категорії :\n";
 			getline(cin, name_category);
-			if (exam.exam_base(base_category, name_category)) {
+			if (exam->exam_base(base_category, name_category)) {
 				tests->file_category_tests(name_category);
-				cout << "Названиие теста :\n";
+				cout << "Назва потрібного тесту :\n";
 				getline(cin, name_test);
-				if (exam.exam_base(base_tests, name_category + "_" + name_test)) {
+				while (exam->exam_str(name_test))
+				{	cout << "Ви нічого не написали\n";	getline(cin, name_test);	}
+				if (exam->exam_base(base_tests, name_category + "_" + name_test)) {
 					system("cls");
-					cout << "Название файла \n";
+					cout << "Назва вашого файлу - \n";
 					getline(cin, name_file);
+					while (exam->exam_str(name_file))
+					{	cout << "Ви нічого не написали\n";	getline(cin, name_category);	}
 					ofstream out(name_file + ".txt");
 					if (out.is_open())
 					{
-						out << "Категорія - " << name_category << "\n";
-						out << "Назва тесту - " << name_test << "\n";
+						out << "Категорія - "	<< name_category << "\n";
+						out << "Назва тесту - " << name_test	 << "\n";
 					}
 					out.close();
 					name_file_test = name_category + "_" + name_test;
 					export_txt(name_file_test, name_file);
 				}
-			}			break;
+			}break;
 		case 4: return;
 		}
 	} while (true);
@@ -561,7 +578,7 @@ void Admin::menegment_user()
 		case 0: add_user();				break;
 		case 1: delete_user();			break;
 		case 2: user_modification();	break;
-		case 4:							return;
+		case 3:							return;
 		}
 	} while (true);
 }
@@ -572,34 +589,35 @@ void Admin::add_user()
 	ofstream out(base_users, ios::app);
 	if (out.is_open())
 	{
-		cout << "Name :"; getline(cin, new_name);
-		list<User*> new_list;
-		if (exam.exam_base(base_users, new_name) == false)
+		cout << "Логін :"; 
+		getline(cin, new_name);
+		while (exam->exam_str(new_name))
+		{	cout << "Ви нічого не написали\n";	getline(cin, new_name);	}
+		if (exam->exam_base(base_users, new_name) == false)
 		{
-			cout << "Password :"; 
+			cout << "Пароль :"; 
 			getline(cin, new_pass);
+			while (exam->exam_str(new_pass))
+			{	cout << "Ви нічого не написали\n";	getline(cin, new_pass);	}
 			new_pass = encryptDecrypt(new_pass);
-			if (exam.exam_admin() == true)
+			if (exam->exam_admin() == true)
 			{
 				out << new_name << "\n";
 				out << new_pass << "\n";
 				string new_FIO, new_number, new_address;
-				cout << "FIO :"; getline(cin, new_FIO);
-				cout << "Mobile number :"; getline(cin, new_number);
-				cout << "Home address :"; getline(cin, new_address);
+				cout << "ПІБ :"; getline(cin, new_FIO);
+				cout << "Номер телефону :"; getline(cin, new_number);
+				cout << "Адреса :"; getline(cin, new_address);
 				User* student = new Student(new_name, new_pass, new_address, new_number, new_FIO);
-				new_list.push_back(student);
-				user.push_r(student->getName(), new_list);
 			}
 		}
 		else
 		{
-			cout << "такое имя уже есть";
-			system("pause");
-			return;
+			cout << "Таке ім'я вже зайняте";
+			system("pause");	return;
 		}
 	}
-	else { cout << "Ошибка открытия файла для записи"; system("pause");  }
+	else { cout << "Файл не відкрився"; system("pause");  }
 }
 
 void Admin::delete_user()
@@ -616,14 +634,13 @@ void Admin::delete_user()
 			getline(f, st);
 			getline(f, st);
 			while (getline(f, st))
-			{
-				cout << " - " << st << "\n";
-				getline(f, st);
-			}
+			{	cout << " - " << st << "\n";	getline(f, st);	}
 			ifstream f_1(base_users);
-			cout << "Введите логин человека\n";
+			cout << "Введіть логін :";
 			getline(cin, name_user);
-			if (exam.exam_user(name_user) == true)
+			while (exam->exam_str(name_user))
+			{	cout << "Ви нічого не написали\n";	getline(cin, name_user);	}
+			if (exam->exam_user(name_user) == true)
 			{
 				while (getline(f_1, buff))
 				{
@@ -646,12 +663,12 @@ void Admin::delete_user()
 				}
 				out_user.close(); f_t.close();
 			}
-			else { cout << "Человека с таким логином нет \n"; system("pause"); }
+			else { cout << "Людини з таким логіном немає \n"; system("pause"); }
 		}
-		else { cout << "Ошибка открытия файла для чтения\n"; system("pause"); }
+		else { cout << "Файл не був відкритий\n"; system("pause"); }
 		f.close();
 	}
-	else { cout << "Ошибка открытия файла для чтения\n"; system("pause"); }
+	else { cout << "Файл не був відкритий\n"; system("pause"); }
 }
 
 void Admin::user_modification() 
@@ -661,14 +678,18 @@ void Admin::user_modification()
 	if (f.is_open())
 	{
 		string name_student, buff, new_inform;
-		cout << "Введіть логін студента\n";
+		cout << "Введіть логін користувача\n";
 		getline(cin, name_student);
+		while (exam->exam_str(name_student))
+		{	cout << "Ви нічого не написали\n";	getline(cin, name_student);	}
 		while (getline(f, buff))
 		{
 			if (name_student == buff) {
-				cout << "Для проверки введите пароль \n";
+				cout << "Для перевірки введіть пароль користувача \n";
 				string pass_student;
 				getline(cin, pass_student);
+				while (exam->exam_str(pass_student))
+				{	cout << "Ви нічого не написали\n";	getline(cin, pass_student);	}
 				pass_student = encryptDecrypt(pass_student);
 				getline(f, buff);
 				if (pass_student == buff)
@@ -679,7 +700,7 @@ void Admin::user_modification()
 					int choice = Menu::select_vertical(
 						{ "Login",
 						  "Пароль",
-						  "ПІП",
+						  "ПІБ",
 						  "Номер телефону",
 						  "Адреса",
 						  "Вихід"			},
@@ -688,26 +709,12 @@ void Admin::user_modification()
 					{
 					case 0:
 						f.open(base_users); out.open(temp);
-						cout << "Введите новый логин\n";
+						cout << "Введіть новий логін\n";
 						getline(cin, new_inform);
-						if (f.is_open() && out.is_open())
+						while (exam->exam_str(new_inform))
+						{	cout << "Ви нічого не написали\n";	getline(cin, new_inform);	}
+						if (exam->exam_user(new_inform) == false) 
 						{
-							while (getline(f, buff))
-							{
-								if (buff != name_student) 
-								{	out << buff << "\n";	}
-								else
-								{	out << new_inform << "\n";	}
-							}
-							f.close(); out.close();
-							f.open(temp); out.open(base_users);
-							if (f.is_open() && out.is_open())
-							{
-								while (getline(f, buff))
-								{	out << buff << "\n";	}
-							}
-							f.close(); out.close();
-							f.open(name_student + "_inform_on_user.txt"); out.open(temp);
 							if (f.is_open() && out.is_open())
 							{
 								while (getline(f, buff))
@@ -718,24 +725,46 @@ void Admin::user_modification()
 									{	out << new_inform << "\n";	}
 								}
 								f.close(); out.close();
-								name_student += "_inform_on_user.txt";
-								remove(name_student.c_str());
-								f.open(temp); out.open(new_inform + "_inform_on_user.txt");
+								f.open(temp); out.open(base_users);
 								if (f.is_open() && out.is_open())
 								{
 									while (getline(f, buff))
-									{	out << buff << "\n";}
+									{	out << buff << "\n";	}
 								}
+								f.close(); out.close();
+								f.open(name_student + "_inform_on_user.txt"); out.open(temp);
+								if (f.is_open() && out.is_open())
+								{
+									while (getline(f, buff))
+									{
+										if (buff != name_student)
+										{	out << buff << "\n";	}
+										else
+										{	out << new_inform << "\n";	}
+									}
+									f.close(); out.close();
+									name_student += "_inform_on_user.txt";
+									remove(name_student.c_str());
+									f.open(temp); out.open(new_inform + "_inform_on_user.txt");
+									if (f.is_open() && out.is_open())
+									{
+										while (getline(f, buff))
+										{	out << buff << "\n";	}
+									}
+								}
+								f.close(); out.close();
 							}
-							f.close(); out.close();
 						}
-						break;
+						else { cout << "Такий логін вже використовується\n"; system("pause"); }
+						return;
 					case 1:
 						f.open(base_users); out.open(temp);
 						if (f.is_open() && out.is_open())
 						{
-							cout << "Введите новый пароль\n";
+							cout << "Введіть новий пароль\n";
 							getline(cin, new_inform);
+							while (exam->exam_str(new_inform))
+							{	cout << "Ви нічого не написали\n";	getline(cin, new_inform);	}
 							while (getline(f, buff))
 							{
 								if (buff == name_student)
@@ -754,16 +783,17 @@ void Admin::user_modification()
 								while (getline(f, buff))
 								{	out << buff << "\n";	}
 							}
-						}
-						break;
+						}break;
 					case 2:
 						f.open(name_student + "_inform_on_user.txt"); out.open(temp);
 						if (f.is_open() && out.is_open())
 						{
 							getline(f, buff);
 							out << buff << "\n";
-							cout << "Введите имя\n";
+							cout << "Введіть нове ім'я\n";
 							getline(cin, buff);
+							while (exam->exam_str(buff))
+							{	cout << "Ви нічого не написали\n";	getline(cin, buff);	}
 							out << buff << "\n";
 							getline(f, buff);
 							getline(f, buff);
@@ -777,8 +807,7 @@ void Admin::user_modification()
 								while (getline(f, buff))
 								{	out << buff << "\n";	}
 							}
-						}
-						break;
+						}break;
 					case 3:
 						f.open(name_student + "_inform_on_user.txt"); out.open(temp);
 						if (f.is_open() && out.is_open())
@@ -789,8 +818,10 @@ void Admin::user_modification()
 							out << buff << "\n";
 							getline(f, buff);
 							out << buff << "\n";
-							cout << "Введите номер\n";
+							cout << "Введіть новий номер\n";
 							getline(cin, buff);
+							while (exam->exam_str(buff))
+							{	cout << "Ви нічого не написали\n";	getline(cin, buff);	}
 							out << buff << "\n";
 							f.close(); out.close();
 							f.open(temp); out.open(name_student + "_inform_on_user.txt");
@@ -799,8 +830,7 @@ void Admin::user_modification()
 								while (getline(f, buff))
 								{	out << buff << "\n";	}
 							}
-						}
-						break;
+						}break;
 					case 4:
 						f.open(name_student + "_inform_on_user.txt"); out.open(temp);
 						if (f.is_open() && out.is_open())
@@ -809,8 +839,10 @@ void Admin::user_modification()
 							out << buff << "\n";
 							getline(f, buff);
 							out << buff << "\n";
-							cout << "Введите адресс\n";
+							cout << "Введіть ному адресу\n";
 							getline(cin, buff);
+							while (exam->exam_str(buff))
+							{	cout << "Ви нічого не написали\n";	getline(cin, buff);	}
 							out << buff << "\n";
 							getline(f, buff);
 							out << buff << "\n";
@@ -821,24 +853,23 @@ void Admin::user_modification()
 								while (getline(f, buff))
 								{	out << buff << "\n";	}
 							}
-						}
-						break;
+						}	break;
 					case 5: break;
 					}
 				}
 				else { cout << "Не верній пароль\n"; system("pause"); }
 			}
-			else { cout << "Такого имени нет\n"; system("pause"); }
 		}	
 	}
-	else { cout << "База недоступна\n"; system("pause"); }
+	else { cout << "Файл не був відкритий\n"; system("pause"); }
 }
 
 
 void Admin::statistic() const
 {
 	do {
-		string buff;
+		string category, test, user, buff;
+		ifstream base;
 		system("cls");
 		cout << "\n\n\n\n\n\n\t\t\t\tСтатистика ";
 		int choice = Menu::select_vertical(
@@ -850,14 +881,76 @@ void Admin::statistic() const
 		switch (choice)
 		{
 		case 0:
+			cout << "~ Існуючі категорії \n";
 			tests->files(base_category);
 			cout << "Введіть категорію\n";
-			getline(cin, buff);
-			if (exam.exam_base(base_category, buff))
-			{	statistic_categories(buff);	}	
+			getline(cin, category);
+			while (exam->exam_str(category))
+			{	cout << "Ви нічого не написали\n";	getline(cin, category);	}
+			if (exam->exam_base(base_category, category))
+			{
+				system("cls");
+				statistic_categories(category);	
+				base.open(base_tests);
+				if (base.is_open())
+				{
+					while (getline(base, buff))
+					{
+						if (exam->exam_category(category, buff))
+						{
+							buff.erase(buff.begin(), buff.begin() + category.size() + 1);
+							statistic_test(category, buff);
+						}
+					}
+				}
+				base.close();
+			}	
+			system("pause");
 			break;
-		case 1: /*statistic_test;*/			break;
-		case 2: /*statistic_user();*/		break;
+		case 1: 
+			cout << "~ Існуючі категорії \n";
+			tests->files(base_category);
+			cout << "Введіть категорію\n";
+			getline(cin, category);
+			while (exam->exam_str(category))
+			{	cout << "Ви нічого не написали\n";	getline(cin, category);	}
+			if (exam->exam_base(base_category, category))
+			{
+				system("cls");
+				cout << "~ Існуючі тести \n";
+				tests->file_category_tests(category);
+				cout << "Введіть назву теста\n";
+				getline(cin, test);
+				while (exam->exam_str(test))
+				{	cout << "Ви нічого не написали\n";	getline(cin, test);	}
+				buff = category + "_" + test;
+				if (exam->exam_base(base_tests, buff))
+				{
+					system("cls");
+					statistic_test(category, test);
+				}
+			}
+			system("pause");
+			break;
+		case 2: 
+			cout << "~ Існуючі юзери\n";
+			base.open(base_users);
+			if (base.is_open())
+			{
+				while (getline(base, buff))
+				{
+					if (buff.find("Admin_") == string::npos) 
+					{ cout << buff << "\n"; }
+					getline(base, buff);
+				}
+				getline(cin, user);
+				while (exam->exam_str(user))
+				{	cout << "Ви нічого не написали\n";	getline(cin, user);	}
+				if (exam->exam_user(user))
+				{	statistic_user(user); }
+			}
+			system("pause");
+			break;
 		case 3: return;
 		}
 	} while (true);
@@ -865,41 +958,134 @@ void Admin::statistic() const
 
 void Admin::statistic_categories(string category) const
 {
-	cout << category << "\n";
 	string user, inf, buff;
-	float summ = 0.0f;
+	double summ = 0.0;
 	int count = 0;
-	ifstream base_user(base_users);
-	while (getline(base_user, user))
-	{
-		
-		ifstream user_res(user + "_result.txt");
-		if (user_res.is_open())
+	size_t size = category.size();
+	ifstream base;
+	base.open(base_users);
+	if (base.is_open()) {
+		while (getline(base, user))
 		{
-			cout << user << "\n";
-			while (getline(user_res, inf))
+			ifstream user_res(user + "_result.txt");
+			if (user_res.is_open())
 			{
-				inf.erase(inf.begin(), inf.begin() + 12);
-				buff = inf;
-				size_t size = category.size();
-				buff.resize(size);
-				cout << buff << "\n";
-				if (category == buff)
+				while (getline(user_res, inf))
 				{
-					inf.erase(inf.begin(), inf.begin() + size + 8);
-					cout << inf << "\n";
-					getline(user_res, inf);
-					cout << inf << "\n";
-					inf.erase(inf.begin(), inf.begin() + 21);
-					cout << inf << "\n";
-					inf.resize(2);
-					summ += stoi(inf);
-					cout << summ << "\n";
+					inf.erase(inf.begin(), inf.begin() + 12);
+					buff = inf;
+					buff.resize(size);
+					if (category == buff)
+					{
+						inf.erase(inf.begin(), inf.begin() + size + 8);
+						getline(user_res, inf);
+						inf.erase(inf.begin(), inf.begin() + 20);
+						inf.resize(2);
+						try {summ += stoi(inf);}
+						catch (exception& e) { summ += 0; }
+						count++;
+					}
 				}
 			}
+			getline(base, user);
 		}
 	}
-	system("pause");
+	base.close();
+	if(count != 0) cout << "~Середня оцінка з категорії " << category << " - " << (summ / count) << " балів\n";
+	else cout << "~Середня оцінка з категорії " << category << " - " << 0 << " балів\n";
+	cout << "Кількість проходжень - " << count << "\n";
+	cout << "~Середнi оцінки тестів : \n";
+}
+
+void Admin::statistic_test(string name_category, string name_test) const
+{
+	map<string, double> user_m;
+	map<string, double> count_user;
+	string buff, user_buff, us;
+	double summ = 0.0;
+	double summ_m = 0.0;
+	int count = 0;
+	ifstream base(base_users);
+	if (base.is_open())
+	{
+		while (getline(base, buff))
+		{
+			ifstream user(buff + "_result.txt");
+			if (user.is_open())
+			{
+				while (getline(user, user_buff))
+				{
+					us = buff;
+					user_m[us];
+					user_buff.erase(user_buff.begin(), user_buff.begin() + name_category.size() + 20);
+					if (user_buff == name_test)
+					{
+						getline(user, user_buff);
+						user_buff.erase(user_buff.begin(), user_buff.begin() + 20);
+						user_buff.resize(2);
+						try
+						{
+							summ  += stoi(user_buff);
+							summ_m = stoi(user_buff);
+						}
+						catch (exception& e) { summ += 0; }
+						user_m[us] += summ_m;
+						count_user[us] += 1;
+						count++;
+					}
+					else{	getline(user, user_buff);	}
+				}
+			}	getline(base, buff);
+		}
+	}base.close();
+	if (count != 0) cout << "~Середня оцінка з тесту " << name_test << " - " << (summ / count) << " балів\n";
+	else cout << "~Середня оцінка з тесту " << name_test << " - " << 0 << " балів\n";
+	cout << "Кількість проходжень - " << count << "\n";
+	for (const auto& n : user_m)
+	{
+		for (const auto& a : count_user)
+		{
+			if (n.first == a.first)
+			{	cout << n.first << " - " << n.second / a.second << " балів \n";	}
+		}
+	}
+}
+
+void Admin::statistic_user(string user) const
+{
+	map<string, double> m;
+	map<string, double> c;
+	ifstream user_(user + "_result.txt");
+	string buff, test, category;
+	size_t n;
+	double summ = 0.0;
+	if (user_.is_open())
+	{
+		while (getline(user_, buff))
+		{
+			buff.erase(buff.begin(), buff.begin() + 12);
+			n = buff.find("тест");
+			category = buff;
+			category.erase(category.begin() + n, category.end());
+			test = buff;
+			test.erase(test.begin(), test.begin() + n + 7);
+			getline(user_, buff);
+			buff.erase(buff.begin(), buff.begin() + 20);
+			buff.resize(2);
+			try { summ = stoi(buff); }
+			catch (exception& e) { summ += 0; }
+			m["Категорія - " + category + ", тест " + test] += summ;
+			c["Категорія - " + category + ", тест " + test] += 1;
+		}
+		for (const auto& n : m)
+		{
+			for (const auto& a : c) 
+			{
+				if (n.first == a.first)
+				{	cout << n.first << " - " << n.second / a.second << " балів \n";	}
+			}
+		}
+	}user_.close();
 }
 
 void Admin::menegment_tests()
@@ -965,34 +1151,28 @@ void Admin::del()
 
 void Admin::add_test()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ Існуючі категорії\n";
 	tests->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Введіть назву потрібної категорії: \n";
 	string name_category, name_test, buff_str;
 	getline(cin, name_category);
-	if (exam.exam_base(base_category, name_category) == 1)
+	while (exam->exam_str(name_category))
+	{	cout << "Ви нічого не написали\n";	getline(cin, name_category); }
+	if (exam->exam_base(base_category, name_category) == 1)
 	{
 		system("cls");
-		cout << "~ Существующие тесты \n";
-		ifstream f(base_tests);
-		if (f.is_open()) {
-			while (getline(f, buff_str))
-			{
-				if (exam.exam_category(name_category, buff_str) == true)
-				{
-					buff_str = regex_replace(buff_str, regex(name_category + "_"), "");
-					cout << " - " << buff_str << "\n";
-				}
-			}
-		}
-		cout << "Введите название теста\n";
+		cout << "~ Існуючі тести \n";
+		tests->file_category_tests(name_category);
+		cout << "Введіть назву потрібного тесту\n";
 		getline(cin, name_test);
+		while (exam->exam_str(name_test))
+		{	cout << "Ви нічого не написали\n";	getline(cin, name_test);	}
 		name_test = name_category + "_" + name_test;
-		if (exam.exam_base(base_tests, name_test) == 0)
+		if (exam->exam_base(base_tests, name_test) == 0)
 		{	tests->add(name_test, tests->get_name_answer(name_test));	}
 		else
 		{
-			cout << "Тест с таким именем уже существует. Хотите добавить вопрос?1 - да , 0 - нет\n";
+			cout << "Тест з такою назвою вже є.Хочете додади запитання?1 - так , 0 - ні\n";
 			bool a; cin >> a; cin.ignore();
 			if (a == true)
 			{	add_questions();	}
@@ -1001,7 +1181,7 @@ void Admin::add_test()
 	}
 	else
 	{
-		cout << "Твкой категории нет. Создать новую? ?1 - да , 0 - нет\n";
+		cout << "Такої категорії немає. Додати нову? ?1 - так , 0 - ні\n";
 		bool a; cin >> a; cin.ignore();
 		if (a == true)
 		{	add_category();	}
@@ -1011,18 +1191,22 @@ void Admin::add_test()
 
 void Admin::delete_test()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ Існуючі категорії\n";
 	tests->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Введіть назву потрібної категорії : \n";
 	string name_category, name_test, buff_str;
 	getline(cin, name_category);
-	if (exam.exam_base(base_category, name_category) == 1)
+	while (exam->exam_str(name_category))
+	{	cout << "Ви нічого не написали\n";	getline(cin, name_category);	}
+	if (exam->exam_base(base_category, name_category) == 1)
 	{
-		cout << "~ Существующие тесты \n";
+		cout << "~ Існуючі тести \n";
 		tests->file_category_tests(name_category);
-		cout << "Введите название теста\n";
+		cout << "Введіть назву потрібного тесту : \n";
 		getline(cin, name_test);
-		if (exam.exam_base(base_tests, name_category + "_" + name_test) == 1)
+		while (exam->exam_str(name_test))
+		{	cout << "Ви нічого не написали\n";	getline(cin, name_test);	}
+		if (exam->exam_base(base_tests, name_category + "_" + name_test) == 1)
 		{
 			name_test = name_category + "_" + name_test;
 			ifstream f(base_tests);
@@ -1040,7 +1224,7 @@ void Admin::delete_test()
 						name_test = regex_replace(name_test, regex(".txt"), "");
 						name_test += "_answer.txt";
 						remove(name_test.c_str());
-						cout << "Тест был удалён\n";
+						cout << "Тест було видалено\n";
 						system("pause");
 					}
 				}
@@ -1056,27 +1240,28 @@ void Admin::delete_test()
 				ft.close(); out2.close();
 			}
 			else
-			{	cout << "eror file\n";	system("pause");	}
+			{	cout << "Файл не відкрився\n";	system("pause");	}
 		}
 	}
 }
 
 void Admin::add_category()
 {
-	cout << "~ Уже имеющиеся категории ~\n";
+	cout << "~ Існуючі категорії \n";
 	tests->files(base_category);
-	cout << "Введите название категории что ходите добавить\n";
+	cout << "Введіть назву нової категорії\n";
 	string name_category, buff_str;
 	getline(cin, name_category);
+	while (exam->exam_str(name_category))
+	{	cout << "Ви нічого не написали\n";	getline(cin, name_category); }
 	ifstream f(base_category);
 	if (f.is_open())
 	{	
-		if (exam.exam_base(base_category, name_category) == 1)
+		if (exam->exam_base(base_category, name_category) == 1)
 		{
 			f.close();
-			cout << "Такая категория уже существует\n";
-			system("pause");
-			return;
+			cout << "Така категорія вже існує\n";
+			system("pause");	return;
 		}
 		f.close();
 		ofstream out(base_category, ios::app);
@@ -1084,23 +1269,25 @@ void Admin::add_category()
 		{	out << name_category << "\n";	}
 		else
 		{
-			cout << "Ошибка открытия файла для чтения\n";
+			cout << "Файл не відкрився\n";
 			system("pause");
 		}
 		out.close();
 	}
 	else
-	{	cout << "Ошибка открытия файла для записи\n";system("pause");	}
+	{	cout << "Файл не відкрився";system("pause");	}
 }
 
 void Admin::delete_category()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ Існуючі категорії\n";
 	tests->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Введіть назву потрібної категорії : \n";
 	string name_category;
 	getline(cin, name_category);
-	if (exam.exam_base(base_category, name_category) == true)
+	while (exam->exam_str(name_category))
+	{	cout << "Ви нічого не написали\n";	getline(cin, name_category);	}
+	if (exam->exam_base(base_category, name_category) == true)
 	{
 		string buff;
 		ifstream f_test(base_tests);
@@ -1108,7 +1295,7 @@ void Admin::delete_category()
 		if (f_test.is_open() && out_temp_test.is_open()) {
 			while (getline(f_test, buff))
 			{
-				if (exam.exam_category(name_category, buff) == false)
+				if (exam->exam_category(name_category, buff) == false)
 				{	out_temp_test<< buff << "\n";	}
 				else
 				{
@@ -1148,7 +1335,7 @@ void Admin::delete_category()
 			while (getline(f_temp_category, buff))
 			{	
 				out_category << buff << "\n";	
-				cout << "Все тесты с этой категории были удалены\n";
+				cout << "Всі тести з цієї категорії було видалено\n";
 				system("pause");
 			}
 		}
@@ -1156,23 +1343,27 @@ void Admin::delete_category()
 		remove(temp.c_str());
 	}
 	else
-	{	cout << "eror file\n";	system("pause");	}
+	{	cout << "Файл не відкрився\n";	system("pause");	}
 }
 
 void Admin::add_questions()
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ Існуюючі категорії\n";
 	tests->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Введіть назву потрібної категорії : \n";
 	string name_test, name_category, str;
 	getline(cin, name_category);
-	if (exam.exam_base(base_category, name_category) == 1)
+	while (exam->exam_str(name_category))
+	{	cout << "Ви нічого не написали\n";	getline(cin, name_category);	}
+	if (exam->exam_base(base_category, name_category) == 1)
 	{
-		cout << "~ Существующие тесты \n";
+		cout << "~ Існуючі тести \n";
 		tests->file_category_tests(name_category);
-		cout << "Введите название теста\n";
+		cout << "Введіть назву потрібного тесту :\n";
 		getline(cin, name_test);
-		if (exam.exam_base(base_tests, name_category + "_" + name_test) == 1)
+		while (exam->exam_str(name_test))
+		{	cout << "Ви нічого не написали\n";	getline(cin, name_test);	}
+		if (exam->exam_base(base_tests, name_category + "_" + name_test) == 1)
 		{
 			ifstream f(name_category + "_" + name_test + ".txt");
 			if (f.is_open())
@@ -1184,36 +1375,39 @@ void Admin::add_questions()
 
 void Admin::delete_questions() 
 {
-	cout << "~ Существующие категории\n";
+	cout << "~ Існуючі каткгорії\n";
 	tests->files(base_category);
-	cout << "Введите название нужной категории : \n";
+	cout << "Введіть назву потрібної категорії : \n";
 	string name_test,name_category, str;
 	int num;
 	getline(cin, name_category);
-	if (exam.exam_base(base_category, name_category) == 1)
+	while (exam->exam_str(name_category))
+	{	cout << "Ви нічого не написали\n";	getline(cin, name_category);	}
+	if (exam->exam_base(base_category, name_category) == 1)
 	{
-		cout << "~ Существующие тесты \n";
+		cout << "~ Існуючі тести \n";
 		tests->file_category_tests(name_category);
-		cout << "Введите название теста\n";
+		cout << "Введіть назву потрібного тесту : \n";
 		getline(cin, name_test);
-		if (exam.exam_base(base_tests, name_category + "_" + name_test) == 1)
+		while (exam->exam_str(name_test))
+		{	cout << "Ви нічого не написали\n";	getline(cin, name_test);	}
+		if (exam->exam_base(base_tests, name_category + "_" + name_test) == 1)
 		{
 			int count = 1;
 			ifstream f_tests(name_category + "_" + name_test + ".txt");
 			if (f_tests.is_open())
 			{
-				cout << "Номер\tзадание" << "\n";
+				cout << "Номер\tзавдання" << "\n";
 				while (getline(f_tests, str))
 				{
 					cout << count << "\t" << str << "\n";
 					getline(f_tests, str);
 					count++;
-				}
-				system("pause");
+				}	system("pause");
 			}
 			f_tests.close();
 			ifstream f_tests2(name_category + "_" + name_test + ".txt");
-			cout << "Введите номер задания\n";
+			cout << "Введіть номер завдання\n";
 			cin >> num; cin.ignore();
 			ofstream out_temp(temp);
 			if (out_temp.is_open() && f_tests2.is_open())
@@ -1288,21 +1482,15 @@ void Admin::export_txt(string name_file_test, string name_file_user) const
 			getline(f_test, buff);
 			out_test << " ~ " << buff << "\n";
 		}
+		out_test << "Відповіді : \n";
 		for (size_t i = 1; getline(f_test_answer, buff); i++)
 		{	out_test << i << ". " << buff << "\n";	}
-	}
-	f_test.close(); f_test_answer.close(); out_test.close();
-}
-
-void Admin::import_txt(string name_file) const
-{
-	//тест с файла
+	}	f_test.close(); f_test_answer.close(); out_test.close();
 }
 
 class Testing_system
 {
 	exam_file exam;
-	BTree<string, list<User*>> user;
 	string file_user = "base_users.txt";
 	void login();
 	void Registration();
@@ -1312,7 +1500,12 @@ public:
 	virtual void menu();
 };
 
-Testing_system::Testing_system () {}
+Testing_system::Testing_system() 
+{ 
+	ofstream(file_user, ios::app); 
+	ofstream("base_category.txt", ios::app);
+	ofstream("base_tests.txt", ios::app);
+}
 Testing_system::~Testing_system() {}
 
 void Testing_system::menu()
@@ -1341,23 +1534,24 @@ void Testing_system::Registration()
 	ofstream out(file_user, ios::app);
 	if (out.is_open())
 	{
-		cout << "Login :"; getline(cin, new_name);
-		list<User*> new_list;
+		cout << "Логін : "; getline(cin, new_name);
+		while (exam.exam_str(new_name))
+		{	cout << "Ви нічого не написали\n";	getline(cin, new_name);	}
 		if (exam.exam_base(file_user, new_name) == false)
 		{
-			cout << "Password :"; encryptPass(new_pass);
+			cout << "Пароль : "; encryptPass(new_pass);
+			while (exam.exam_str(new_pass))
+			{	cout << "\nПароль не може бути пустим або приймати пробіл 1 символом\n";	encryptPass(new_pass);	}
 			new_pass = encryptDecrypt(new_pass);
 			if (exam.exam_admin() == true)
 			{
 				out << new_name << "\n";
 				out << new_pass << "\n";
 				string new_FIO, new_number, new_address;
-				cout << "\nFIO :"; getline(cin, new_FIO);
-				cout << "Mobile number :"; getline(cin, new_number);
-				cout << "Home address :"; getline(cin, new_address);
+				cout << "\nПІБ :";			getline(cin, new_FIO);
+				cout << "Номер телефону :"; getline(cin, new_number);
+				cout << "Адреса :";			getline(cin, new_address);
 				User* student = new Student(new_name, new_pass, new_address, new_number, new_FIO);
-				new_list.push_back(student);
-				user.push_r(student->getName(), new_list);
 				student->menu();
 			}
 			else
@@ -1365,21 +1559,21 @@ void Testing_system::Registration()
 				out << "Admin_" + new_name << "\n";
 				out << new_pass << "\n";
 				string new_FIO;
-				cout << "\nFIO :"; getline(cin, new_FIO);
+				cout << "\nПІБ :"; getline(cin, new_FIO);
+				while (exam.exam_str(new_FIO))
+				{	cout << "Ви нічого не написали\n";	getline(cin, new_FIO);	}
 				User* admin = new Admin(new_name, new_pass, new_FIO);
-				new_list.push_back(admin);
-				user.push_r(admin->getName(), new_list);
 				admin->menu();
 			}
 		}
 		else
 		{
-			cout << "такое имя уже есть";
+			cout << "Такий логін вже зайнятий";
 			system("pause");
 			return;
 		}
 	}
-	else { cout << "eror"; system("pause"); return; }
+	else { cout << "Файл не відкрився"; system("pause"); return; }
 }
 
 
@@ -1388,16 +1582,19 @@ void Testing_system::login()
 {
 	string this_name, file_name, pass, file_pass;
 	ifstream f(file_user);
-	cout << "Login - ";
+	cout << "Логін - ";
 	getline(cin, this_name);
+	while (exam.exam_str(this_name))
+	{	cout << "Ви нічого не написали\n";	getline(cin, this_name); }
 	if (f.is_open()) 
 	{
 		while (getline(f, file_name))
 		{
 			if ("Admin_" + this_name == file_name)
 			{
-				cout << "Password - ";
-				encryptPass(pass);
+				cout << "Пароль - ";	encryptPass(pass);
+				while (exam.exam_str(pass))
+				{	cout << "\nПароль не може бути пустим або приймати пробіл 1 символом\n";	encryptPass(pass);	}
 				pass = encryptDecrypt(pass);
 				getline(f, file_pass);
 				if (pass == file_pass)
@@ -1409,15 +1606,16 @@ void Testing_system::login()
 				}
 				else 
 				{
-					cout << "Неверный пароль";
+					cout << "Неправельний пароль";
 					system("pause");
 					return;
 				}
 			}
 			else if (this_name == file_name)
 			{
-				cout << "Password - ";
-				encryptPass(pass);
+				cout << "Пароль - ";	encryptPass(pass);
+				while (exam.exam_str(pass))
+				{	cout << "\nПароль не може бути пустим або приймати пробіл 1 символом\n";	encryptPass(pass);	}
 				pass = encryptDecrypt(pass);
 				getline(f, file_pass);
 				if (pass == file_pass)
@@ -1429,13 +1627,13 @@ void Testing_system::login()
 				}
 				else
 				{
-					cout << "Неверный пароль";
+					cout << "Неправельний пароль";
 					system("pause");
 					return;
 				}
 			}
 		}	
-		cout << "Неверное имя пользователя";
+		cout << "Неправельний логін ";
 		system("pause");
 	}
 }
