@@ -441,6 +441,7 @@ void Student::take_a_test()
 	}
 }
 
+
 void Student::add(string category, string test)
 {
 	ofstream out(this->getName() + "_result.txt", ios::app);
